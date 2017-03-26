@@ -16,8 +16,12 @@ void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::strin
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
 
-    m_pubSubClient = new PubSubClient(m_wifiClient);
-    m_pubSubClient->setServer(mqttServer.c_str(), m_mqttPort);
+    IPAddress server;
+    server.fromString(m_mqttServer.c_str());
+
+    m_mqttClient.setServer(server, m_mqttPort);
+    m_mqttClient.setCredentials(mqttUsername.c_str(), mqttPassword.c_str());
+    m_mqttClient.setCleanSession(false);
 
     m_deviceStatusInfoTimer.start();
     m_checkConnectivityTimer.start();
@@ -31,6 +35,8 @@ void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, 
     m_fw = fw;
     m_fwVersion = fwVersion;
 
+    m_mqttClient.setClientId(m_deviceName.c_str());
+
     m_deviceNameTopic = "/" + m_deviceName;
     m_deviceMacTopic = m_deviceNameTopic + "/mac";
     m_deviceIpTopic = m_deviceNameTopic + "/ip";
@@ -41,35 +47,33 @@ void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, 
 
 void MqttManager::publishDeviceStatusInfo()
 {
-    m_pubSubClient->publish(m_deviceNameTopic.c_str(), m_deviceName.c_str());
-    m_pubSubClient->publish(m_deviceMacTopic.c_str(), m_deviceMac.c_str());
-    m_pubSubClient->publish(m_deviceIpTopic.c_str(), m_deviceIP.c_str());
-    m_pubSubClient->publish(m_deviceTypeTopic.c_str(), m_deviceType.c_str());
-    m_pubSubClient->publish(m_fwTopic.c_str(), m_fw.c_str());
-    m_pubSubClient->publish(m_fwVersionTopic.c_str(), m_fwVersion.c_str());
+    m_mqttClient.publish(m_deviceNameTopic.c_str(), 1, true, m_deviceName.c_str(), m_deviceName.size());
+    m_mqttClient.publish(m_deviceMacTopic.c_str(), 1, true, m_deviceMac.c_str(), m_deviceMac.size());
+    m_mqttClient.publish(m_deviceIpTopic.c_str(), 1, true, m_deviceIP.c_str(), m_deviceIP.size());
+    m_mqttClient.publish(m_deviceTypeTopic.c_str(), 1, true, m_deviceType.c_str(), m_deviceType.size());
+    m_mqttClient.publish(m_fwTopic.c_str(), 1, true, m_fw.c_str(), m_fw.size());
+    m_mqttClient.publish(m_fwVersionTopic.c_str(), 1, true, m_fwVersion.c_str(), m_fwVersion.size());
 
     this->refreshStatusTopics();
 }
 
 void MqttManager::checkConnectivity()
 {
-    if (!m_pubSubClient->connected())
+    if (!m_mqttClient.connected())
     {
-        if (m_pubSubClient->connect(m_deviceName.c_str(), m_mqttUsername.c_str(), m_mqttPassword.c_str()))
+        m_connected = false;
+        m_mqttClient.connect();
+    }
+    else if (!m_connected)
+    {
+        for (int i = 0; i < m_subscribeTopics.size(); i++)
         {
-            for (int i = 0; i < m_subscribeTopics.size(); i++)
-            {
-                m_pubSubClient->subscribe(m_subscribeTopics[i].c_str());
-            }
+            m_mqttClient.subscribe(m_subscribeTopics[i].c_str(), 1);
+        }
 
-            this->setDeviceMac();
-            this->publishDeviceStatusInfo();
-            m_connected = true;
-        }
-        else
-        {
-            m_connected = false;
-        }
+        this->setDeviceMac();
+        this->publishDeviceStatusInfo();
+        m_connected = true;
     }
     else
     {
@@ -102,6 +106,10 @@ void MqttManager::addSubscribeTopic(std::string subscribeTopic)
 
 void MqttManager::clearSubscribeTopics()
 {
+    for(int i=0; i < m_subscribeTopics.size(); i++)
+    {
+        m_mqttClient.unsubscribe(m_subscribeTopics[i].c_str());
+    }
     m_subscribeTopics.clear();
 }
 
@@ -112,7 +120,7 @@ void MqttManager::startConnection()
 
 void MqttManager::stopConnection()
 {
-    m_pubSubClient->disconnect();
+    m_mqttClient.disconnect();
     m_connected = false;
 }
 
@@ -136,9 +144,14 @@ void MqttManager::publishMQTT(std::string topic, std::string payload)
     }
 }
 
-void MqttManager::setCallback(void (*callback)(char*, uint8_t*, unsigned int))
+void MqttManager::setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ))
 {
-    m_pubSubClient->setCallback(callback);
+    m_mqttClient.onMessage(callback);
+}
+
+void MqttManager::setLastWillMQTT(std::string topic, std::string payload)
+{
+    m_mqttClient.setWill(topic.c_str(), 1, true, payload.c_str(), payload.size());
 }
 
 void MqttManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
@@ -149,10 +162,6 @@ void MqttManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
 
 void MqttManager::loop()
 {
-
-    m_pubSubClient->loop();
-
-
     if (m_checkConnectivityTimer.check())
     {
         this->checkConnectivity();
@@ -180,7 +189,7 @@ void MqttManager::loop()
             {
                 for (int i = 0; i < m_tempPublishTopics.size(); i++)
                 {
-                    m_pubSubClient->publish(m_tempPublishTopics[i].first.c_str(), m_tempPublishTopics[i].second.c_str());
+                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 1, true, m_tempPublishTopics[i].second.c_str(), m_tempPublishTopics[i].second.size());
                 }
 
                 m_tempPublishTopics.clear();
@@ -199,16 +208,11 @@ void MqttManager::refreshStatusTopics()
 {
     for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
     {
-        m_pubSubClient->publish(it->first.c_str(), it->second.c_str());
+        m_mqttClient.publish(it->first.c_str(), 1, true, it->second.c_str(), it->second.size());
     }
 }
 
 bool MqttManager::connected()
 {
     return m_connected;
-}
-
-MqttManager::~MqttManager()
-{
-    delete m_pubSubClient;
 }

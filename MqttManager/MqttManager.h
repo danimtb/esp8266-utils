@@ -3,12 +3,13 @@
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-
-#include "SimpleTimer.h"
 
 #undef min
 #undef max
+
+#include <AsyncMqttClient.h>
+
+#include "SimpleTimer.h"
 
 #include <map>
 #include <string>
@@ -40,8 +41,7 @@ private:
     std::vector<std::string> m_subscribeTopics;
     std::vector<std::pair<std::string, std::string>> m_tempPublishTopics;
 
-    WiFiClient m_wifiClient;
-    PubSubClient* m_pubSubClient;
+    AsyncMqttClient m_mqttClient;
 
     bool m_connected;
     bool m_publishMQTT;
@@ -56,12 +56,12 @@ private:
 
 public:
     MqttManager();
-    ~MqttManager();
 
     void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword);
 
     void setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion);
-    void setCallback(void (*callback)(char*, uint8_t*, unsigned int));
+    void setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ));
+    void setLastWillMQTT(std::string topic, std::string payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
