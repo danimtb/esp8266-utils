@@ -6,7 +6,7 @@
 
 UpdateManager::UpdateManager()
 {
-    m_checkUpdateTimer.setup(RT_ON, 300000); // 5 minutes
+    m_checkUpdateTimer.setup(RT_ON, 600000); // 10 minutes
 }
 
 void UpdateManager::setup(std::string host, std::string fw, std::string fwVersion, std::string device)

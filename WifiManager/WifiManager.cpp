@@ -24,7 +24,7 @@ void WifiManager::setup(std::string staSSID, std::string staPASS, std::string ip
     m_mask.fromString(mask.c_str());
     m_gateway.fromString(gateway.c_str());
 
-    m_checkConnectivityTimer.setup(RT_ON, 20000);
+    m_checkConnectivityTimer.setup(RT_ON, 10000);
     m_checkConnectivityTimer.start();
 }
 
