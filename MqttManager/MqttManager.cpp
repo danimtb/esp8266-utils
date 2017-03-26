@@ -60,7 +60,7 @@ void MqttManager::publishDeviceStatusInfo()
 
     deviceDataObject.printTo(deviceDataString);
 
-    m_mqttClient.publish(m_deviceDataTopic.c_str(), 1, true, deviceDataString.c_str());
+    m_mqttClient.publish(m_deviceDataTopic.c_str(), 0, false, deviceDataString.c_str());
 
     this->refreshStatusTopics();
 }
@@ -200,7 +200,7 @@ void MqttManager::loop()
             {
                 for (int i = 0; i < m_tempPublishTopics.size(); i++)
                 {
-                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 1, true, m_tempPublishTopics[i].second.c_str());
+                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 0, false, m_tempPublishTopics[i].second.c_str());
                 }
 
                 m_tempPublishTopics.clear();
