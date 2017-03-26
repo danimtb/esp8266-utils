@@ -2,7 +2,7 @@
 
 void PowManager::setup()
 {
-    m_powTimer.setup(RT_ON, 20000);
+    m_powTimer.setup(RT_ON, 25000);
     m_hlw8012.begin(CF_PIN, CF1_PIN, SEL_PIN, HIGH, false);
     m_hlw8012.setResistors(CURRENT_RESISTOR, VOLTAGE_RESISTOR_UPSTREAM, VOLTAGE_RESISTOR_DOWNSTREAM);
 }
