@@ -16,9 +16,9 @@ private:
     SimpleTimer m_checkUpdateTimer;
 
     std::string m_host;
-    std::string m_fw;
-    std::string m_fwVersion;
-    std::string m_device;
+    std::string m_firmware;
+    std::string m_firmwareVersion;
+    std::string m_hardware;
 
     int16_t getServerResponse(std::string &payload);
     bool updateSpiffs(std::string spiffsUrl);
@@ -28,7 +28,7 @@ private:
 public:
     UpdateManager();
     void checkUpdate();
-    void setup(std::string host, std::string fw, std::string fwVersion, std::string device);
+    void setup(std::string host, std::string firmware, std::string firmwareVersion, std::string hardware);
     void loop();
 };
 

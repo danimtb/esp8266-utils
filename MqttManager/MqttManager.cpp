@@ -1,5 +1,7 @@
 #include "MqttManager.h"
 
+#include "ArduinoJson.h"
+
 MqttManager::MqttManager()
 {
     m_connected = false;
@@ -30,32 +32,35 @@ void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::strin
     m_checkConnectivityTimer.start();
 }
 
-void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion)
+void MqttManager::setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion)
 {
     m_deviceName = deviceName;
-    m_deviceType = deviceType;
     m_deviceIP = deviceIP;
-    m_fw = fw;
-    m_fwVersion = fwVersion;
+    m_hardware = hardware;
+    m_firmware = firmware;
+    m_firmwareVersion = firmwareVersion;
 
     m_mqttClient.setClientId(m_deviceName.c_str());
 
-    m_deviceNameTopic = "/" + m_deviceName;
-    m_deviceMacTopic = m_deviceNameTopic + "/mac";
-    m_deviceIpTopic = m_deviceNameTopic + "/ip";
-    m_deviceTypeTopic = m_deviceNameTopic + "/type";
-    m_fwTopic = m_deviceNameTopic + "/fw";
-    m_fwVersionTopic = m_fwTopic + "/version";
+    m_deviceDataTopic = "/" + m_deviceName;
 }
 
 void MqttManager::publishDeviceStatusInfo()
 {
-    m_mqttClient.publish(m_deviceNameTopic.c_str(), 1, true, m_deviceName.c_str());
-    m_mqttClient.publish(m_deviceMacTopic.c_str(), 1, true, m_deviceMac.c_str());
-    m_mqttClient.publish(m_deviceIpTopic.c_str(), 1, true, m_deviceIP.c_str());
-    m_mqttClient.publish(m_deviceTypeTopic.c_str(), 1, true, m_deviceType.c_str());
-    m_mqttClient.publish(m_fwTopic.c_str(), 1, true, m_fw.c_str());
-    m_mqttClient.publish(m_fwVersionTopic.c_str(), 1, true, m_fwVersion.c_str());
+    StaticJsonBuffer<200> deviceDataBuffer;
+    JsonObject& deviceDataObject = deviceDataBuffer.createObject();
+    String deviceDataString;
+
+    deviceDataObject["name"] = m_deviceName.c_str();
+    deviceDataObject["mac"] = m_deviceMac.c_str();
+    deviceDataObject["ip"] = m_deviceIP.c_str();
+    deviceDataObject["hardware"] = m_hardware.c_str();
+    deviceDataObject["firmware"] = m_firmware.c_str();
+    deviceDataObject["firmware_version"] = m_firmwareVersion.c_str();
+
+    deviceDataObject.printTo(deviceDataString);
+
+    m_mqttClient.publish(m_deviceDataTopic.c_str(), 1, true, deviceDataString.c_str());
 
     this->refreshStatusTopics();
 }

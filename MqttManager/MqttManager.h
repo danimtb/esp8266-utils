@@ -24,18 +24,13 @@ private:
     std::string m_mqttPassword;
 
     std::string m_deviceName;
-    std::string m_deviceType;
     std::string m_deviceIP;
     std::string m_deviceMac;
-    std::string m_fw;
-    std::string m_fwVersion;
+    std::string m_hardware;
+    std::string m_firmware;
+    std::string m_firmwareVersion;
 
-    std::string m_deviceMacTopic;
-    std::string m_deviceIpTopic;
-    std::string m_deviceNameTopic;
-    std::string m_deviceTypeTopic;
-    std::string m_fwTopic;
-    std::string m_fwVersionTopic;
+    std::string m_deviceDataTopic;
 
     std::map<std::string, std::string> m_statusTopics;
     std::vector<std::string> m_subscribeTopics;
@@ -61,7 +56,7 @@ public:
 
     void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword);
 
-    void setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion);
+    void setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion);
     void setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ));
     void setLastWillMQTT(std::string topic, const char* payload);
 

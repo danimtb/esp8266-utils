@@ -9,19 +9,19 @@ UpdateManager::UpdateManager()
     m_checkUpdateTimer.setup(RT_ON, 600000); // 10 minutes
 }
 
-void UpdateManager::setup(std::string host, std::string fw, std::string fwVersion, std::string device)
+void UpdateManager::setup(std::string host, std::string firmware, std::string firmwareVersion, std::string hardware)
 {
     m_host = host;
-    m_fw = fw;
-    m_fwVersion = fwVersion;
-    m_device = device;
+    m_firmware = firmware;
+    m_firmwareVersion = firmwareVersion;
+    m_hardware = hardware;
 
     m_checkUpdateTimer.start();
 }
 
 int16_t UpdateManager::getServerResponse(std::string &payload)
 {
-    std::string request = m_host + "/" + m_fw + "/" + m_fwVersion + "/" + m_device;
+    std::string request = m_host + "/" + m_firmware + "/" + m_firmwareVersion + "/" + m_hardware;
 
     HTTPClient http;
     http.begin((char *)request.c_str());
@@ -67,9 +67,9 @@ void UpdateManager::checkUpdate()
 
             if (response.containsKey("version"))
             {
-                if (response.containsKey("fw"))
+                if (response.containsKey("firmware"))
                 {
-                    firmwareDownload = response["fw"].as<char*>();
+                    firmwareDownload = response["firmware"].as<char*>();
                 }
                 else
                 {
