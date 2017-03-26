@@ -5,8 +5,11 @@ MqttManager::MqttManager()
     m_connected = false;
     m_publishMQTT = false;
 
+    m_checkConnectivityTimeOnline = 20000;
+    m_checkConnectivityTimeOffline = 3000;
+
     m_deviceStatusInfoTimer.setup(RT_ON, 300000);
-    m_checkConnectivityTimer.setup(RT_ON, 20000);
+    m_checkConnectivityTimer.setup(RT_ON, m_checkConnectivityTimeOffline);
 }
 
 void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword)
@@ -47,12 +50,12 @@ void MqttManager::setDeviceData(std::string deviceName, std::string deviceType, 
 
 void MqttManager::publishDeviceStatusInfo()
 {
-    m_mqttClient.publish(m_deviceNameTopic.c_str(), 1, true, m_deviceName.c_str(), m_deviceName.size());
-    m_mqttClient.publish(m_deviceMacTopic.c_str(), 1, true, m_deviceMac.c_str(), m_deviceMac.size());
-    m_mqttClient.publish(m_deviceIpTopic.c_str(), 1, true, m_deviceIP.c_str(), m_deviceIP.size());
-    m_mqttClient.publish(m_deviceTypeTopic.c_str(), 1, true, m_deviceType.c_str(), m_deviceType.size());
-    m_mqttClient.publish(m_fwTopic.c_str(), 1, true, m_fw.c_str(), m_fw.size());
-    m_mqttClient.publish(m_fwVersionTopic.c_str(), 1, true, m_fwVersion.c_str(), m_fwVersion.size());
+    m_mqttClient.publish(m_deviceNameTopic.c_str(), 1, true, m_deviceName.c_str());
+    m_mqttClient.publish(m_deviceMacTopic.c_str(), 1, true, m_deviceMac.c_str());
+    m_mqttClient.publish(m_deviceIpTopic.c_str(), 1, true, m_deviceIP.c_str());
+    m_mqttClient.publish(m_deviceTypeTopic.c_str(), 1, true, m_deviceType.c_str());
+    m_mqttClient.publish(m_fwTopic.c_str(), 1, true, m_fw.c_str());
+    m_mqttClient.publish(m_fwVersionTopic.c_str(), 1, true, m_fwVersion.c_str());
 
     this->refreshStatusTopics();
 }
@@ -62,6 +65,7 @@ void MqttManager::checkConnectivity()
     if (!m_mqttClient.connected())
     {
         m_connected = false;
+        m_checkConnectivityTimer.load(m_checkConnectivityTimeOffline);
         m_mqttClient.connect();
     }
     else if (!m_connected)
@@ -74,6 +78,7 @@ void MqttManager::checkConnectivity()
         this->setDeviceMac();
         this->publishDeviceStatusInfo();
         m_connected = true;
+        m_checkConnectivityTimer.load(m_checkConnectivityTimeOnline);
     }
     else
     {
@@ -122,6 +127,7 @@ void MqttManager::stopConnection()
 {
     m_mqttClient.disconnect();
     m_connected = false;
+    m_checkConnectivityTimer.load(m_checkConnectivityTimeOffline);
 }
 
 void MqttManager::publishMQTT(std::string topic, std::string payload)
@@ -149,9 +155,9 @@ void MqttManager::setCallback(void (*callback)(char*, char*, AsyncMqttClientMess
     m_mqttClient.onMessage(callback);
 }
 
-void MqttManager::setLastWillMQTT(std::string topic, std::string payload)
+void MqttManager::setLastWillMQTT(std::string topic, const char* payload)
 {
-    m_mqttClient.setWill(topic.c_str(), 1, true, payload.c_str(), payload.size());
+    m_mqttClient.setWill(topic.c_str(), 1, true, payload);
 }
 
 void MqttManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)
@@ -189,7 +195,7 @@ void MqttManager::loop()
             {
                 for (int i = 0; i < m_tempPublishTopics.size(); i++)
                 {
-                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 1, true, m_tempPublishTopics[i].second.c_str(), m_tempPublishTopics[i].second.size());
+                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 1, true, m_tempPublishTopics[i].second.c_str());
                 }
 
                 m_tempPublishTopics.clear();
@@ -208,7 +214,7 @@ void MqttManager::refreshStatusTopics()
 {
     for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
     {
-        m_mqttClient.publish(it->first.c_str(), 1, true, it->second.c_str(), it->second.size());
+        m_mqttClient.publish(it->first.c_str(), 1, true, it->second.c_str());
     }
 }
 

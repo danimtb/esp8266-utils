@@ -48,6 +48,8 @@ private:
 
     SimpleTimer m_deviceStatusInfoTimer;
     SimpleTimer m_checkConnectivityTimer;
+    unsigned long m_checkConnectivityTimeOnline;
+    unsigned long m_checkConnectivityTimeOffline;
 
     void setDeviceMac();
     void publishDeviceStatusInfo();
@@ -61,7 +63,7 @@ public:
 
     void setDeviceData(std::string deviceName, std::string deviceType, std::string deviceIP, std::string fw, std::string fwVersion);
     void setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ));
-    void setLastWillMQTT(std::string topic, std::string payload);
+    void setLastWillMQTT(std::string topic, const char* payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
