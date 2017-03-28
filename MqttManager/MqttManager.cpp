@@ -2,6 +2,17 @@
 
 #include "ArduinoJson.h"
 
+void (*messageReceivedCallback)(std::string , std::string);
+
+void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
+{
+    std::string topicString(topic);
+    std::string payloadString(payload);
+
+    messageReceivedCallback(topic, payload);
+}
+
+
 MqttManager::MqttManager()
 {
     m_connected = false;
@@ -24,9 +35,11 @@ void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::strin
     IPAddress server;
     server.fromString(m_mqttServer.c_str());
 
-    m_mqttClient.setServer(server, m_mqttPort);
-    m_mqttClient.setCredentials(mqttUsername.c_str(), mqttPassword.c_str());
+    m_mqttClient.onMessage(onMqttMessage);
+
     m_mqttClient.setCleanSession(false);
+    m_mqttClient.setCredentials(mqttUsername.c_str(), mqttPassword.c_str());
+    m_mqttClient.setServer(server, m_mqttPort);
 
     m_deviceStatusInfoTimer.start();
     m_checkConnectivityTimer.start();
@@ -155,9 +168,9 @@ void MqttManager::publishMQTT(std::string topic, std::string payload)
     }
 }
 
-void MqttManager::setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ))
+void MqttManager::setCallback(void (*callback)(std::string , std::string))
 {
-    m_mqttClient.onMessage(callback);
+    messageReceivedCallback = callback;
 }
 
 void MqttManager::setLastWillMQTT(std::string topic, const char* payload)

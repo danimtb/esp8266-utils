@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 
+
 class MqttManager
 {
 private:
@@ -57,7 +58,7 @@ public:
     void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword);
 
     void setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion);
-    void setCallback(void (*callback)(char*, char*, AsyncMqttClientMessageProperties, size_t, size_t, size_t ));
+    void setCallback(void (*callback)(std::string , std::string));
     void setLastWillMQTT(std::string topic, const char* payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
