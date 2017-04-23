@@ -35,12 +35,10 @@ private:
 
     std::map<std::string, std::string> m_statusTopics;
     std::vector<std::string> m_subscribeTopics;
-    std::vector<std::pair<std::string, std::string>> m_tempPublishTopics;
 
     AsyncMqttClient m_mqttClient;
 
     bool m_connected;
-    bool m_publishMQTT;
 
     SimpleTimer m_deviceStatusInfoTimer;
     SimpleTimer m_checkConnectivityTimer;

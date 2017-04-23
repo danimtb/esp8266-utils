@@ -6,9 +6,7 @@ void (*messageReceivedCallback)(std::string , std::string);
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
 {
-    std::string topicString(topic);
-    std::string payloadString(payload);
-
+    payload[len] = '\0';
     messageReceivedCallback(topic, payload);
 }
 
@@ -16,7 +14,6 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 MqttManager::MqttManager()
 {
     m_connected = false;
-    m_publishMQTT = false;
 
     m_checkConnectivityTimeOnline = 20000;
     m_checkConnectivityTimeOffline = 3000;
@@ -150,21 +147,18 @@ void MqttManager::stopConnection()
 
 void MqttManager::publishMQTT(std::string topic, std::string payload)
 {
-    if(m_statusTopics.find(topic) != m_statusTopics.end())
+    if (m_statusTopics.find(topic) != m_statusTopics.end() && m_statusTopics[topic] != payload)
     {
-        if(m_statusTopics[topic] != payload)
+        m_statusTopics[topic] = payload;
+
+        if (m_connected)
         {
-            m_statusTopics[topic] = payload;
-            m_publishMQTT = true;
+            this->refreshStatusTopics();
         }
     }
-    else if(m_connected)
+    else if (m_connected)
     {
-        std::pair<std::string, std::string> tempPair;
-        tempPair.first = topic;
-        tempPair.second = payload;
-        m_tempPublishTopics.push_back(tempPair);
-        m_publishMQTT = true;
+        m_mqttClient.publish(topic.c_str(), 0, false, payload.c_str());
     }
 }
 
@@ -203,28 +197,6 @@ void MqttManager::loop()
 
             m_deviceStatusInfoTimer.start(); //restart timer
         }
-
-
-        if (m_publishMQTT)
-        {
-            this->refreshStatusTopics();
-
-            if (!m_tempPublishTopics.empty())
-            {
-                for (int i = 0; i < m_tempPublishTopics.size(); i++)
-                {
-                    m_mqttClient.publish(m_tempPublishTopics[i].first.c_str(), 0, false, m_tempPublishTopics[i].second.c_str());
-                }
-
-                m_tempPublishTopics.clear();
-            }
-
-            m_publishMQTT = false;
-        }
-    }
-    else
-    {
-        m_tempPublishTopics.clear(); //Delete temp publish topics buffer if there is not connection
     }
 }
 
