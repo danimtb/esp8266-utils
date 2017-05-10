@@ -34,7 +34,7 @@ void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::strin
 
     m_mqttClient.onMessage(onMqttMessage);
 
-    m_mqttClient.setCleanSession(false);
+    m_mqttClient.setCleanSession(true);
     m_mqttClient.setCredentials(mqttUsername.c_str(), mqttPassword.c_str());
     m_mqttClient.setServer(server, m_mqttPort);
 
@@ -187,10 +187,8 @@ void MqttManager::loop()
         m_checkConnectivityTimer.start(); //restart timer
     }
 
-
     if (m_connected)
     {
-
         if (m_deviceStatusInfoTimer.check())
         {
             this->publishDeviceStatusInfo();
