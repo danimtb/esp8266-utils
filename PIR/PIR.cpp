@@ -1,63 +1,62 @@
 #include "PIR.h"
 
-PIR::PIR(unsigned int _pin, unsigned long secs)
+void risingEdge() {}
+
+void fallingEdge() {}
+
+PIR::PIR(unsigned int pin, unsigned long delay)
 {
-	pin=_pin;
-	pinMode(pin, INPUT);
-	state=false;
-	timer.setup(PULSE);
-	seconds=secs;
+    m_pin = pin;
+    pinMode(pin, INPUT);
+    m_state = false;
+
+    m_delay = 0;
+    m_delay = delay;
+    m_timer.setup(RT_ON, delay);
+
+    m_risingEdgeCallback = &risingEdge;
+    m_fallingEdgeCallback = &fallingEdge;
 }
 
-bool PIR::rising_edge()
+void PIR::setRisingEdgeCallback(void (*callback)())
 {
-	if(digitalRead(pin)==LOW && state)
-	{
-		state=false;
-	}
-	
-	if(digitalRead(pin)==HIGH && !state)
-	{
-		state=true;
-		timer.load(seconds);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    m_risingEdgeCallback = callback;
 }
 
-bool PIR::falling_edge()
+void PIR::setFallingEdgeCallback(void (*callback)())
 {
-	if(digitalRead(pin)==HIGH && !state)
-	{
-		state=true;
-	}
-	
-	if(digitalRead(pin)==LOW && state)
-	{
-		state=false;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    m_fallingEdgeCallback = callback;
 }
 
 bool PIR::getState()
 {
-	return state;
+    return m_state;
 }
 
-bool PIR::timeout()
+void PIR::loop()
 {
-	if(timer.check())
-	{
-		state=false;
-		return true;
-	}
-	else
-		return false;
+    if (digitalRead(m_pin) == HIGH && !m_state)
+    {
+        m_state = true;
+        m_timer.start();
+        m_risingEdgeCallback();
+    }
+    else if (m_delay == 0 && digitalRead(m_pin) == LOW && m_state)
+    {
+        m_state = false;
+        m_fallingEdgeCallback();
+    }
+    else if (m_delay != 0 && m_timer.check() && m_state)
+    {
+        m_state = false;
+        m_fallingEdgeCallback();
+    }
+    else if (digitalRead(m_pin) == HIGH)
+    {
+        m_state = true;
+    }
+    else
+    {
+        m_state = false;
+    }
 }

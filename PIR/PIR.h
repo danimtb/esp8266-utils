@@ -7,6 +7,7 @@
 class PIR
 {
 private:
+    unsigned int m_pin;
 	bool m_state;
 	unsigned long m_delay;
 	SimpleTimer m_timer;
@@ -21,6 +22,8 @@ public:
     void setFallingEdgeCallback(void (*callback)());
 
     bool getState();
+
+    void loop();
 };
 
 #endif
