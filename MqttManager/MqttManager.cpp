@@ -162,6 +162,13 @@ void MqttManager::publishMQTT(std::string topic, std::string payload)
     }
 }
 
+void MqttManager::publishMQTT(std::string topic, float payload)
+{
+    char output[50];
+    snprintf(output, 50, "%f", payload);
+    this->publishMQTT(topic, output);
+}
+
 void MqttManager::setCallback(void (*callback)(std::string , std::string))
 {
     messageReceivedCallback = callback;

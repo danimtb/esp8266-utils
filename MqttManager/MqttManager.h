@@ -71,6 +71,7 @@ public:
     void stopConnection();
 
     void publishMQTT(std::string topic, std::string payload);
+    void publishMQTT(std::string topic, float payload);
 
     bool connected();
 
