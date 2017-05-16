@@ -4,7 +4,7 @@ void risingEdge() {}
 
 void fallingEdge() {}
 
-PIR::PIR(unsigned int pin, unsigned long delay)
+PIR::PIR(uint8_t pin, unsigned long delay)
 {
     m_pin = pin;
     pinMode(pin, INPUT);
@@ -35,10 +35,14 @@ bool PIR::getState()
 
 void PIR::loop()
 {
+    if (digitalRead(m_pin) == HIGH)
+    {
+        m_timer.start();
+    }
+
     if (digitalRead(m_pin) == HIGH && !m_state)
     {
         m_state = true;
-        m_timer.start();
         m_risingEdgeCallback();
     }
     else if (m_delay == 0 && digitalRead(m_pin) == LOW && m_state)
@@ -50,13 +54,5 @@ void PIR::loop()
     {
         m_state = false;
         m_fallingEdgeCallback();
-    }
-    else if (digitalRead(m_pin) == HIGH)
-    {
-        m_state = true;
-    }
-    else
-    {
-        m_state = false;
     }
 }

@@ -7,7 +7,7 @@
 class PIR
 {
 private:
-    unsigned int m_pin;
+    uint8_t m_pin;
 	bool m_state;
 	unsigned long m_delay;
 	SimpleTimer m_timer;
@@ -16,7 +16,7 @@ private:
     void (*m_fallingEdgeCallback)(void);
 
 public:
-	PIR(unsigned int pin, unsigned long delay);
+    PIR(uint8_t pin, unsigned long delay);
 
     void setRisingEdgeCallback(void (*callback)());
     void setFallingEdgeCallback(void (*callback)());
