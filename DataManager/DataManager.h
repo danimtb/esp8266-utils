@@ -7,6 +7,9 @@
 #include <cstdint>
 #include <string>
 
+#include "Embedis.h"
+#include "spi_flash.h"
+
 #define DM_BEGIN_ADDR 0
 #define DM_TOTAL_MEM 512
 #define DM_END_ADDR 511
@@ -35,6 +38,7 @@
 class DataManager
 {
 private:
+    Embedis* m_embedis;
     std::string EEPROMreadString(uint16_t startAddress, uint16_t maxMemory);
     void EEPROMwriteString(uint16_t startAddress, uint16_t maxMemory, std::string data);
 
@@ -72,9 +76,10 @@ public:
     std::string getDeviceName();
     std::string getMqttTopic(uint8_t index);
 
-    void setup();
 
-    void loop();
+    std::string get(std::string key);
+    void set(std::string key, std::string value);
+
 };
 
 #endif
