@@ -1,5 +1,5 @@
-#ifndef PIR_H
-#define PIR_H
+#ifndef TEMT6000_H
+#define TEMT6000_H
 
 #include "Arduino.h"
 #include "SimpleTimer.h"
