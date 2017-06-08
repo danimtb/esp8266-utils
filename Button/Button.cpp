@@ -4,7 +4,7 @@ void shortPressCallback() {}
 void longPressCallback() {}
 void longlongPressCallback() {}
 
-void Button::setup(uint8_t pin, uint8_t mode)
+Button::Button()
 {
     m_longlongPressCallback = &longlongPressCallback;
     m_longPressCallback = &longPressCallback;
@@ -12,34 +12,55 @@ void Button::setup(uint8_t pin, uint8_t mode)
 
     m_state = false;
     m_millisSincePressed = 0;
+}
+
+void Button::setup(uint8_t pin, ButtonType type)
+{
     m_pin = pin;
-    m_mode = mode;
-    pinMode(m_pin, INPUT);
+
+    if (type == ButtonType::PULLUP)
+    {
+        pinMode(m_pin, INPUT);
+        m_pressedState = LOW;
+    }
+    else if (type == ButtonType::PULLUP_INTERNAL)
+    {
+        pinMode(m_pin, INPUT_PULLUP);
+        m_pressedState = LOW;
+    }
+    else if (type == ButtonType::PULLDOWN)
+    {
+        pinMode(m_pin, INPUT);
+        m_pressedState = HIGH;
+    }
+    else if (type == ButtonType::PULLDOWN_INTERNAL_16)
+    {
+        pinMode(m_pin, INPUT_PULLDOWN_16);
+        m_pressedState = HIGH;
+    }
+    else
+    {
+        pinMode(m_pin, INPUT);
+        m_pressedState = LOW;
+    }
 }
 
 bool Button::isPressed()
 {
-    if (digitalRead(m_pin) == m_mode)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return digitalRead(m_pin) == m_pressedState;
 }
 
 void Button::loop()
 {
-    if (isPressed() && !m_state)
+    if (this->isPressed() && !m_state)
     {
         //Button has been pressed, store time of press
         m_state = true;
         m_millisSincePressed = millis();
     }
-    else if (!isPressed() && m_state)
+    else if (!this->isPressed() && m_state)
     {
-        //Button has been released, trigger one of the two possible options
+        //Button has been released, trigger one of the possible options
         m_state = false;
 
         if (millis() - m_millisSincePressed > 10000)

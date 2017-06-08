@@ -3,13 +3,19 @@
 
 #include "Arduino.h"
 
-#define PULLUP HIGH
-#define PULLDOWN LOW
+enum class ButtonType
+{
+    PULLUP,
+    PULLDOWN,
+    PULLUP_INTERNAL,
+    PULLDOWN_INTERNAL_16
+};
 
 class Button
 {
   public:
-    void setup(uint8_t pin, uint8_t mode = PULLDOWN);
+    Button();
+    void setup(uint8_t pin, ButtonType type);
     bool isPressed();
     void setShortPressCallback(void (*callback)());
     void setLongPressCallback(void (*callback)());
@@ -18,7 +24,7 @@ class Button
 
   private:
     uint8_t m_pin;
-    uint8_t m_mode;
+    uint8_t m_pressedState;
     uint8_t m_state;
     unsigned long m_millisSincePressed;
     bool m_shortPress;
