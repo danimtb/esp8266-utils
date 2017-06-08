@@ -25,6 +25,7 @@ private:
     RgbColor readColor();
 
 public:
+    RgbLED();
     void setup(uint8_t redPin, uint8_t greenPin, uint8_t bluePin);
 	void on();
 	void off();

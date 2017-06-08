@@ -1,7 +1,7 @@
 
 #include "RgbLED.h"
 
-void RgbLED::RgbLED()
+RgbLED::RgbLED()
 {
     // White color by default
     m_color.red = 255;
