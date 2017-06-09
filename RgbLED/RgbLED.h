@@ -17,9 +17,7 @@ private:
     uint8_t m_greenPin;
     uint8_t m_bluePin;
     RgbColor m_color;
-
-    uint16_t from255to1024(uint8_t value);
-    uint8_t from1024to255(uint16_t value);
+    bool m_state;
 
     void writeColor(uint8_t red, uint8_t green, uint8_t blue);
     RgbColor readColor();
