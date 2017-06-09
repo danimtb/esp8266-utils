@@ -30,6 +30,7 @@ public:
 	void on();
 	void off();
     void setColor(uint8_t red, uint8_t green, uint8_t blue);
+    RgbColor getColor();
 	bool getState();
 	void commute();
 };

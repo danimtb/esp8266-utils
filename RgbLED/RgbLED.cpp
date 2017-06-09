@@ -68,6 +68,11 @@ void RgbLED::setColor(uint8_t red, uint8_t green, uint8_t blue)
     }
 }
 
+RgbColor RgbLED::getColor()
+{
+    return m_color;
+}
+
 bool RgbLED::getState()
 {
     if (this->readColor().red == 0 && this->readColor().green == 0 && this->readColor().blue == 0)
