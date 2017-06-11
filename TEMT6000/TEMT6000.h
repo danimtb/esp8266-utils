@@ -18,7 +18,7 @@ private:
 public:
     TEMT6000();
     void setup(uint8_t pin, float vccVoltage);
-    void setOnChangeCallback(void (*callback)(), unsigned long sampleTimeMillis);
+    void setOnChangeCallback(void (*callback)(float), unsigned long sampleTimeMillis);
 
     int16_t getRawValue();
     float getVoltage();
