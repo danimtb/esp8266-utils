@@ -27,6 +27,7 @@ private:
     std::string m_rgbStateTopicKey{"rgb_state_topic"};
     std::string m_rgbValueTemplateKey{"rgb_value_template"};
     std::string m_whiteValueCommandTopicKey{"white_value_command_topic"};
+    std::string m_stateValueTemplateKey{"state_value_template"};
     std::string m_whiteValueStateTopicKey{"white_value_state_topic"};
     std::string m_whiteValueValueTemplateKey{"white_value_value_template"};
     std::string m_xyCommandTopicKey{"xy_command_topic"};
@@ -34,7 +35,10 @@ private:
     std::string m_xyValueTemplateKey{"xy_value_template"};
 
 public:
-    MqttDiscoveryLight(std::string entity_id, std::string command_topic);
+    MqttDiscoveryLight(std::string entity_id, std::string command_topic = "");
+    void setDefaultCommandTopic();
+
+    std::string command_suffix{"set"};
 
     std::string command_topic;
     std::string brightness_command_topic;
@@ -53,6 +57,7 @@ public:
     std::string rgb_command_topic;
     std::string rgb_state_topic;
     std::string rgb_value_template;
+    std::string state_value_template;
     std::string white_value_command_topic;
     std::string white_value_state_topic;
     std::string white_value_value_template;

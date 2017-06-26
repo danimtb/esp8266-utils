@@ -22,12 +22,13 @@ MqttManager::MqttManager()
     m_checkConnectivityTimer.setup(RT_ON, m_checkConnectivityTimeOffline);
 }
 
-void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword)
+void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword, bool mqttDiscoveryEnabled)
 {
     m_mqttServer = mqttServer;
     m_mqttPort = atoi(mqttPort.c_str());
     m_mqttUsername = mqttUsername;
     m_mqttPassword = mqttPassword;
+    m_mqttDiscoveryEnabled = mqttDiscoveryEnabled;
 
     IPAddress server;
     server.fromString(m_mqttServer.c_str());
@@ -53,24 +54,69 @@ void MqttManager::setDeviceData(std::string deviceName, std::string hardware, st
     m_mqttClient.setClientId(m_deviceName.c_str());
 
     m_deviceDataTopic = "/" + m_deviceName;
+
+
+    if (m_mqttDiscoveryEnabled)
+    {
+        m_deviceNameSensor = MqttDiscoverySensor(deviceName + " name");
+        m_discoveryComponents.push_back(m_deviceNameSensor);
+
+        m_deviceIpSensor = MqttDiscoverySensor(deviceName + " IP");
+        m_discoveryComponents.push_back(m_deviceIpSensor);
+
+        m_deviceMacSensor = MqttDiscoverySensor(deviceName + " Mac");
+        m_discoveryComponents.push_back(m_deviceMacSensor);
+
+        m_deviceHardwareSensor = MqttDiscoverySensor(deviceName + " Hardware");
+        m_discoveryComponents.push_back(m_deviceHardwareSensor);
+
+        m_deviceFirmwareSensor = MqttDiscoverySensor(deviceName + " Firmware");
+        m_discoveryComponents.push_back(m_deviceFirmwareSensor);
+
+        m_deviceFirmwareVersionSensor = MqttDiscoverySensor(deviceName + " Firmware Version");
+        m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
+    }
+}
+
+void MqttManager::publishDiscoveryInfo()
+{
+    if (m_mqttDiscoveryEnabled)
+    {
+        for (auto component : m_discoveryComponents)
+        {
+            this->publishMQTT(component->getConfigTopic(), component->getPayload());
+        }
+    }
 }
 
 void MqttManager::publishDeviceStatusInfo()
 {
-    StaticJsonBuffer<200> deviceDataBuffer;
-    JsonObject& deviceDataObject = deviceDataBuffer.createObject();
-    String deviceDataString;
+    if (!m_mqttDiscoveryEnabled)
+    {
+        StaticJsonBuffer<200> deviceDataBuffer;
+        JsonObject& deviceDataObject = deviceDataBuffer.createObject();
+        String deviceDataString;
 
-    deviceDataObject["name"] = m_deviceName.c_str();
-    deviceDataObject["mac"] = m_deviceMac.c_str();
-    deviceDataObject["ip"] = m_deviceIP.c_str();
-    deviceDataObject["hardware"] = m_hardware.c_str();
-    deviceDataObject["firmware"] = m_firmware.c_str();
-    deviceDataObject["firmware_version"] = m_firmwareVersion.c_str();
+        deviceDataObject["name"] = m_deviceName.c_str();
+        deviceDataObject["ip"] = m_deviceIP.c_str();
+        deviceDataObject["mac"] = m_deviceMac.c_str();
+        deviceDataObject["hardware"] = m_hardware.c_str();
+        deviceDataObject["firmware"] = m_firmware.c_str();
+        deviceDataObject["firmware_version"] = m_firmwareVersion.c_str();
 
-    deviceDataObject.printTo(deviceDataString);
+        deviceDataObject.printTo(deviceDataString);
 
-    m_mqttClient.publish(m_deviceDataTopic.c_str(), 0, false, deviceDataString.c_str());
+        this->publishMQTT(m_deviceDataTopic, deviceDataString.c_str());
+    }
+    else
+    {
+        this->publishMQTT(m_deviceNameSensor->state_topic, m_deviceName);
+        this->publishMQTT(m_deviceIpSensor->state_topic, m_deviceIP);
+        this->publishMQTT(m_deviceMacSensor->state_topic, m_deviceMac);
+        this->publishMQTT(m_deviceHardwareSensor->state_topic, m_hardware);
+        this->publishMQTT(m_deviceFirmwareSensor->state_topic, m_firmware);
+        this->publishMQTT(m_deviceFirmwareVersionSensor->state_topic, m_firmwareVersion);
+    }
 
     this->refreshStatusTopics();
 }
@@ -91,6 +137,7 @@ void MqttManager::checkConnectivity()
         }
 
         this->setDeviceMac();
+        this->publishDiscoveryInfo();
         this->publishDeviceStatusInfo();
         m_connected = true;
         m_checkConnectivityTimer.load(m_checkConnectivityTimeOnline);
@@ -106,6 +153,26 @@ void MqttManager::setDeviceMac()
     if (m_deviceMac.empty())
     {
         m_deviceMac = std::string(WiFi.macAddress().c_str());
+    }
+}
+
+void MqttManager::enableDiscovery(bool enable)
+{
+    m_mqttDiscoveryEnabled = enable;
+}
+
+void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
+{
+    m_discoveryComponents.push_back(component);
+
+    if (!component->state_topic.empty())
+    {
+        this->addStatusTopic(component->state_topic);
+    }
+
+    if (dynamic_cast<MqttDiscoveryLight*>(component))
+    {
+        this->addSubscribeTopic(dynamic_cast<MqttDiscoveryLight*>(component)->command_topic);
     }
 }
 

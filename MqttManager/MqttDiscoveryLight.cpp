@@ -4,10 +4,23 @@ MqttDiscoveryLight::MqttDiscoveryLight(std::string entity_id, std::string comman
 {    
     this->entity_id = entity_id;
     this->name = entity_id.replace(entity_id.begin(), entity_id.end(), "_", " ");
-    this->command_topic = command_topic;
+
+    if (command_topic.empty())
+    {
+        this->setDefaultCommandTopic();
+    }
+    else
+    {
+        this->command_topic = command_topic;
+    }
 }
 
-virtual std::string MqttDiscoveryLight::getConfigPayload()
+void MqttDiscoveryLight::setDefaultCommandTopic()
+{
+    command_topic = discovery_prefix + "/" + component + "/" + entity_id + "/" + command_suffix;
+}
+
+std::string MqttDiscoveryLight::getConfigPayload()
 {
     m_jsonObject = m_jsonBuffer.createObject();
     String jsonString;

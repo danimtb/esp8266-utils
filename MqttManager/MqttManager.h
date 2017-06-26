@@ -10,6 +10,9 @@
 #include <AsyncMqttClient.h>
 
 #include "SimpleTimer.h"
+#include "MqttDiscoveryComponent.h"
+#include "MqttDiscoveryLight.h"
+#include "MqttDiscoverySensor.h"
 
 #include <map>
 #include <string>
@@ -33,12 +36,21 @@ private:
 
     std::string m_deviceDataTopic;
 
+    MqttDiscoverySensor* m_deviceNameSensor;
+    MqttDiscoverySensor* m_deviceIpSensor;
+    MqttDiscoverySensor* m_deviceMacSensor;
+    MqttDiscoverySensor* m_deviceHardwareSensor;
+    MqttDiscoverySensor* m_deviceFirmwareSensor;
+    MqttDiscoverySensor* m_deviceFirmwareVersionSensor;
+
     std::map<std::string, std::string> m_statusTopics;
     std::vector<std::string> m_subscribeTopics;
+    std::vector<MqttDiscoveryComponent*> m_discoveryComponents;
 
     AsyncMqttClient m_mqttClient;
 
     bool m_connected;
+    bool m_mqttDiscoveryEnabled{false};
 
     SimpleTimer m_deviceStatusInfoTimer;
     SimpleTimer m_checkConnectivityTimer;
@@ -47,19 +59,23 @@ private:
 
     void setDeviceMac();
     void publishDeviceStatusInfo();
-    void checkConnectivity();
+    void publishDiscoveryInfo();
     void refreshStatusTopics();
+    void checkConnectivity();
 
 public:
     MqttManager();
 
-    void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword);
+    void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword, bool mqttDiscoveryEnabled = false);
 
     void setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion);
     void setCallback(void (*callback)(std::string , std::string));
     void setLastWillMQTT(std::string topic, const char* payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
+
+    void enableDiscovery(bool enable);
+    void addDiscoveryComponent(MqttDiscoveryComponent * component);
 
     void addSubscribeTopic(std::string subscribeTopic);
     void clearSubscribeTopics();
