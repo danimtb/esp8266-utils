@@ -58,22 +58,22 @@ void MqttManager::setDeviceData(std::string deviceName, std::string hardware, st
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceNameSensor = MqttDiscoverySensor(deviceName + " name");
+        m_deviceNameSensor = new MqttDiscoverySensor(deviceName + " name");
         m_discoveryComponents.push_back(m_deviceNameSensor);
 
-        m_deviceIpSensor = MqttDiscoverySensor(deviceName + " IP");
+        m_deviceIpSensor = new MqttDiscoverySensor(deviceName + " IP");
         m_discoveryComponents.push_back(m_deviceIpSensor);
 
-        m_deviceMacSensor = MqttDiscoverySensor(deviceName + " Mac");
+        m_deviceMacSensor = new MqttDiscoverySensor(deviceName + " Mac");
         m_discoveryComponents.push_back(m_deviceMacSensor);
 
-        m_deviceHardwareSensor = MqttDiscoverySensor(deviceName + " Hardware");
+        m_deviceHardwareSensor = new MqttDiscoverySensor(deviceName + " Hardware");
         m_discoveryComponents.push_back(m_deviceHardwareSensor);
 
-        m_deviceFirmwareSensor = MqttDiscoverySensor(deviceName + " Firmware");
+        m_deviceFirmwareSensor = new MqttDiscoverySensor(deviceName + " Firmware");
         m_discoveryComponents.push_back(m_deviceFirmwareSensor);
 
-        m_deviceFirmwareVersionSensor = MqttDiscoverySensor(deviceName + " Firmware Version");
+        m_deviceFirmwareVersionSensor = new MqttDiscoverySensor(deviceName + " Firmware Version");
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
     }
 }
@@ -84,7 +84,7 @@ void MqttManager::publishDiscoveryInfo()
     {
         for (auto component : m_discoveryComponents)
         {
-            this->publishMQTT(component->getConfigTopic(), component->getPayload());
+            this->publishMQTT(component->getConfigTopic(), component->getConfigPayload());
         }
     }
 }

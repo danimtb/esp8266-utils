@@ -14,6 +14,6 @@ void MqttDiscoveryComponent::addToPayload(std::string paramKey, std::string para
 {
     if (!paramValue.empty())
     {
-        m_jsonObject[paramKey] = paramValue;
+        m_jsonObject[paramKey.c_str()] = paramValue.c_str();
     }
 }

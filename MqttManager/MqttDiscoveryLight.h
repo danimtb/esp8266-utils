@@ -3,6 +3,8 @@
 
 #include "MqttDiscoveryComponent.h"
 
+#include "ArduinoJson.h"
+
 #include <string>
 
 class MqttDiscoveryLight : public MqttDiscoveryComponent
@@ -64,6 +66,8 @@ public:
     std::string xy_command_topic;
     std::string xy_state_topic;
     std::string xy_value_template;
+
+    virtual std::string getConfigPayload();
 };
 
 #endif // MQTTDISCOVERYLIGHT_H

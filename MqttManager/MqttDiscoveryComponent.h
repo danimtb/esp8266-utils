@@ -8,14 +8,13 @@
 
 class MqttDiscoveryComponent
 {
-private:
+protected:
     std::string m_nameKey{"name"};
     std::string m_payloadOffKey{"payload_off"};
     std::string m_payloadOnKey{"payload_on"};
     std::string m_qosKey{"qos"};
     std::string m_stateTopicKey{"state_topic"};
 
-protected:
     StaticJsonBuffer<500> m_jsonBuffer;
     JsonObject& m_jsonObject;
 
@@ -35,7 +34,7 @@ public:
     std::string state_topic;
 
 	std::string getConfigTopic();
-    virtual std::string getConfigPayload();
+    virtual std::string getConfigPayload() = 0;
     void setDefaultStateTopic();
 };
 
