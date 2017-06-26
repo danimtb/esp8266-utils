@@ -7,6 +7,7 @@
 
 class MqttDiscoveryLight : public MqttDiscoveryComponent
 {
+private:
     std::string m_commandTopicKey{"command_topic"};
 
     std::string m_brightnessCommandTopicKey{"brightness_command_topic"};
@@ -20,17 +21,11 @@ class MqttDiscoveryLight : public MqttDiscoveryComponent
     std::string m_effectStateTopicKey{"effect_state_topic"};
     std::string m_effectValueTemplateKey{"effect_value_template"};
     std::string m_effectListKey{"effect_list"};
-    std::string m_nameKey{"name"};
     std::string m_optimisticKey{"optimistic"};
-    std::string m_payloadOffKey{"payload_off"};
-    std::string m_payloadOnKey{"payload_on"};
-    std::string m_qosKey{"qos"};
     std::string m_retainKey{"retain"};
     std::string m_rgbCommandTopicKey{"rgb_command_topic"};
     std::string m_rgbStateTopicKey{"rgb_state_topic"};
     std::string m_rgbValueTemplateKey{"rgb_value_template"};
-    std::string m_stateTopicKey{"state_topic"};
-    std::string m_stateValueTemplateKey{"state_value_template"};
     std::string m_whiteValueCommandTopicKey{"white_value_command_topic"};
     std::string m_whiteValueStateTopicKey{"white_value_state_topic"};
     std::string m_whiteValueValueTemplateKey{"white_value_value_template"};
@@ -53,17 +48,11 @@ public:
     std::string effect_state_topic;
     std::string effect_value_template;
     std::string effect_list;
-    std::string name;
     std::string optimistic;
-    std::string payload_off;
-    std::string payload_on;
-    std::string qos;
     std::string retain;
     std::string rgb_command_topic;
     std::string rgb_state_topic;
     std::string rgb_value_template;
-    std::string state_topic;
-    std::string state_value_template;
     std::string white_value_command_topic;
     std::string white_value_state_topic;
     std::string white_value_value_template;
