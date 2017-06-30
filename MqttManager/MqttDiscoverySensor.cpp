@@ -17,7 +17,7 @@ MqttDiscoverySensor::MqttDiscoverySensor(std::string entity_id, std::string stat
 
 std::string MqttDiscoverySensor::getConfigPayload()
 {
-    m_jsonObject = m_jsonBuffer.createObject();
+    //m_jsonObject = m_jsonBuffer.createObject();
     String jsonString;
 
     this->addToPayload(m_nameKey, name);
@@ -27,6 +27,6 @@ std::string MqttDiscoverySensor::getConfigPayload()
     this->addToPayload(m_stateTopicKey, state_topic);
     this->addToPayload(m_valueTemplateKey, value_template);
 
-    m_jsonObject.printTo(jsonString);
+    //m_jsonObject.printTo(jsonString);
     return jsonString.c_str();
 }

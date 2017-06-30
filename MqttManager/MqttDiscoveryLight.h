@@ -10,8 +10,6 @@
 class MqttDiscoveryLight : public MqttDiscoveryComponent
 {
 private:
-    std::string m_commandTopicKey{"command_topic"};
-
     std::string m_brightnessCommandTopicKey{"brightness_command_topic"};
     std::string m_brightnessScaleKey{"brightness_scale"};
     std::string m_brightnessStateTopicKey{"brightness_state_topic"};
@@ -39,10 +37,9 @@ private:
 public:
     MqttDiscoveryLight(std::string entity_id, std::string command_topic = "");
     void setDefaultCommandTopic();
+    virtual std::string getConfigPayload();
 
     std::string command_suffix{"set"};
-
-    std::string command_topic;
     std::string brightness_command_topic;
     std::string brightness_scale;
     std::string brightness_state_topic;
@@ -66,8 +63,6 @@ public:
     std::string xy_command_topic;
     std::string xy_state_topic;
     std::string xy_value_template;
-
-    virtual std::string getConfigPayload();
 };
 
 #endif // MQTTDISCOVERYLIGHT_H

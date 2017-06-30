@@ -22,8 +22,11 @@ void MqttDiscoveryLight::setDefaultCommandTopic()
 
 std::string MqttDiscoveryLight::getConfigPayload()
 {
-    m_jsonObject = m_jsonBuffer.createObject();
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& jsonObject = jsonBuffer.createObject();
     String jsonString;
+
+    MqttDiscoveryComponent::getConfigPayload();
 
     this->addToPayload(m_commandTopicKey, command_topic);
     this->addToPayload(m_brightnessCommandTopicKey, brightness_command_topic);
@@ -37,7 +40,6 @@ std::string MqttDiscoveryLight::getConfigPayload()
     this->addToPayload(m_effectStateTopicKey, effect_state_topic);
     this->addToPayload(m_effectValueTemplateKey, effect_value_template);
     this->addToPayload(m_effectListKey, effect_list);
-    this->addToPayload(m_nameKey, name);
     this->addToPayload(m_optimisticKey, optimistic);
     this->addToPayload(m_payloadOffKey, payload_off);
     this->addToPayload(m_payloadOnKey, payload_on);
@@ -55,6 +57,11 @@ std::string MqttDiscoveryLight::getConfigPayload()
     this->addToPayload(m_xyStateTopicKey, xy_state_topic);
     this->addToPayload(m_xyValueTemplateKey, xy_value_template);
 
-    m_jsonObject.printTo(jsonString);
+    for(auto i : m_fields)
+    {
+        jsonObject[i.first.c_str()] = i.second.c_str();
+    }
+
+    jsonObject.printTo(jsonString);
     return jsonString.c_str();
 }

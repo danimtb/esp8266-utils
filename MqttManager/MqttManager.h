@@ -75,7 +75,8 @@ public:
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void enableDiscovery(bool enable);
-    void addDiscoveryComponent(MqttDiscoveryComponent * component);
+    void addDiscoveryComponent(MqttDiscoveryLight* component);
+    void addDiscoveryComponent(MqttDiscoverySensor* component);
 
     void addSubscribeTopic(std::string subscribeTopic);
     void clearSubscribeTopics();

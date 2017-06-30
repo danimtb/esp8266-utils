@@ -161,7 +161,7 @@ void MqttManager::enableDiscovery(bool enable)
     m_mqttDiscoveryEnabled = enable;
 }
 
-void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
+void MqttManager::addDiscoveryComponent(MqttDiscoveryLight * component)
 {
     m_discoveryComponents.push_back(component);
 
@@ -170,9 +170,9 @@ void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
         this->addStatusTopic(component->state_topic);
     }
 
-    if (dynamic_cast<MqttDiscoveryLight*>(component))
+    if (!component->command_topic.empty())
     {
-        this->addSubscribeTopic(dynamic_cast<MqttDiscoveryLight*>(component)->command_topic);
+        this->addSubscribeTopic(component->command_topic);
     }
 }
 

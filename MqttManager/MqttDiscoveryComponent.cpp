@@ -14,6 +14,23 @@ void MqttDiscoveryComponent::addToPayload(std::string paramKey, std::string para
 {
     if (!paramValue.empty())
     {
-        m_jsonObject[paramKey.c_str()] = paramValue.c_str();
+        m_fields[paramKey] = paramValue;
     }
+}
+
+std::string MqttDiscoveryComponent::getConfigPayload()
+{
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject& jsonObject = jsonBuffer.createObject();
+    String jsonString;
+
+    this->addToPayload(m_nameKey, name);
+
+    for(auto i : m_fields)
+    {
+        jsonObject[i.first.c_str()] = i.second.c_str();
+    }
+
+    jsonObject.printTo(jsonString);
+    return jsonString.c_str();
 }
