@@ -131,7 +131,7 @@ void MqttManager::checkConnectivity()
     }
     else if (!m_connected)
     {
-        for (int i = 0; i < m_subscribeTopics.size(); i++)
+        for (uint8_t i = 0; i < m_subscribeTopics.size(); i++)
         {
             m_mqttClient.subscribe(m_subscribeTopics[i].c_str(), 1);
         }
@@ -193,7 +193,7 @@ void MqttManager::addSubscribeTopic(std::string subscribeTopic)
 
 void MqttManager::clearSubscribeTopics()
 {
-    for(int i=0; i < m_subscribeTopics.size(); i++)
+    for(uint8_t i=0; i < m_subscribeTopics.size(); i++)
     {
         m_mqttClient.unsubscribe(m_subscribeTopics[i].c_str());
     }

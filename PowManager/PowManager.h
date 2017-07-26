@@ -4,7 +4,6 @@
 #include <Arduino.h>
 
 #include <cstdint>
-#include <string>
 
 #include "HLW8012.h"
 #include "SimpleTimer.h"

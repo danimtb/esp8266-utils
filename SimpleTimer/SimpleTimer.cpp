@@ -41,8 +41,7 @@ bool SimpleTimer::check()
             return false;
         }
     }
-
-    if (m_type == RT_ON)
+    else if (m_type == RT_ON)
     {
         if (millis() - m_currentMillis > m_milliSeconds)
         {
@@ -53,8 +52,7 @@ bool SimpleTimer::check()
             return false;
         }
     }
-
-    if (m_type == RT_OFF)
+    else if (m_type == RT_OFF)
     {
         if (millis() - m_currentMillis > m_milliSeconds)
         {
@@ -64,5 +62,10 @@ bool SimpleTimer::check()
         {
             return true;
         }
+    }
+    else
+    {
+        // Unknown SimpleTimer type
+        return false;
     }
 }
