@@ -1,21 +1,34 @@
 #include "MqttDiscoveryComponent.h"
 
+MqttDiscoveryComponent::MqttDiscoveryComponent(std::string component, std::string entity_id)
+{
+    this->component = component;
+    this->entity_id = entity_id;
+
+    this->setConfigurtionVariables("name", entity_id.replace(entity_id.begin(), entity_id.end(), "_", " "));
+}
+
+void MqttDiscoveryComponent::setConfigurtionVariables(std::string configKey, std::string configValue);
+{
+    if (!configValue.empty())
+    {
+        m_fields[configKey] = configValue;
+    }
+}
+
 std::string MqttDiscoveryComponent::getConfigTopic()
 {
     return discovery_prefix + "/" + component + "/" + entity_id + "/" + discovery_suffix;
 }
 
-void MqttDiscoveryComponent::setDefaultStateTopic()
+std::string MqttDiscoveryComponent::getStateTopic()
 {
     state_topic = discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix;
 }
 
-void MqttDiscoveryComponent::addToPayload(std::string paramKey, std::string paramValue)
+std::string MqttDiscoveryComponent::getCommandTopic()
 {
-    if (!paramValue.empty())
-    {
-        m_fields[paramKey] = paramValue;
-    }
+    state_topic = discovery_prefix + "/" + component + "/" + entity_id + "/" + command_suffix;
 }
 
 std::string MqttDiscoveryComponent::getConfigPayload()
@@ -23,8 +36,6 @@ std::string MqttDiscoveryComponent::getConfigPayload()
     DynamicJsonBuffer jsonBuffer;
     JsonObject& jsonObject = jsonBuffer.createObject();
     String jsonString;
-
-    this->addToPayload(m_nameKey, name);
 
     for(auto i : m_fields)
     {

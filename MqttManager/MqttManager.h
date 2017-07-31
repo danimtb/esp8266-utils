@@ -11,8 +11,6 @@
 
 #include "SimpleTimer.h"
 #include "MqttDiscoveryComponent.h"
-#include "MqttDiscoveryLight.h"
-#include "MqttDiscoverySensor.h"
 
 #include <map>
 #include <string>
@@ -36,12 +34,12 @@ private:
 
     std::string m_deviceDataTopic;
 
-    MqttDiscoverySensor* m_deviceNameSensor;
-    MqttDiscoverySensor* m_deviceIpSensor;
-    MqttDiscoverySensor* m_deviceMacSensor;
-    MqttDiscoverySensor* m_deviceHardwareSensor;
-    MqttDiscoverySensor* m_deviceFirmwareSensor;
-    MqttDiscoverySensor* m_deviceFirmwareVersionSensor;
+    MqttDiscoveryComponent* m_deviceNameSensor;
+    MqttDiscoveryComponent* m_deviceIpSensor;
+    MqttDiscoveryComponent* m_deviceMacSensor;
+    MqttDiscoveryComponent* m_deviceHardwareSensor;
+    MqttDiscoveryComponent* m_deviceFirmwareSensor;
+    MqttDiscoveryComponent* m_deviceFirmwareVersionSensor;
 
     std::map<std::string, std::string> m_statusTopics;
     std::vector<std::string> m_subscribeTopics;
@@ -75,8 +73,7 @@ public:
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void enableDiscovery(bool enable);
-    void addDiscoveryComponent(MqttDiscoveryLight* component);
-    void addDiscoveryComponent(MqttDiscoverySensor* component);
+    void addDiscoveryComponent(MqttDiscoveryComponent* component);
 
     void addSubscribeTopic(std::string subscribeTopic);
     void clearSubscribeTopics();

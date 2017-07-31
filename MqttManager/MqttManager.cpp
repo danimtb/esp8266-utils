@@ -58,22 +58,22 @@ void MqttManager::setDeviceData(std::string deviceName, std::string hardware, st
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceNameSensor = new MqttDiscoverySensor(deviceName + " name");
+        m_deviceNameSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_name");
         m_discoveryComponents.push_back(m_deviceNameSensor);
 
-        m_deviceIpSensor = new MqttDiscoverySensor(deviceName + " IP");
+        m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_IP");
         m_discoveryComponents.push_back(m_deviceIpSensor);
 
-        m_deviceMacSensor = new MqttDiscoverySensor(deviceName + " Mac");
+        m_deviceMacSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_MAC");
         m_discoveryComponents.push_back(m_deviceMacSensor);
 
-        m_deviceHardwareSensor = new MqttDiscoverySensor(deviceName + " Hardware");
+        m_deviceHardwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Hardware");
         m_discoveryComponents.push_back(m_deviceHardwareSensor);
 
-        m_deviceFirmwareSensor = new MqttDiscoverySensor(deviceName + " Firmware");
+        m_deviceFirmwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Firmware");
         m_discoveryComponents.push_back(m_deviceFirmwareSensor);
 
-        m_deviceFirmwareVersionSensor = new MqttDiscoverySensor(deviceName + " Firmware Version");
+        m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Firmware_Version");
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
     }
 }
@@ -161,18 +161,22 @@ void MqttManager::enableDiscovery(bool enable)
     m_mqttDiscoveryEnabled = enable;
 }
 
-void MqttManager::addDiscoveryComponent(MqttDiscoveryLight * component)
+void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
 {
     m_discoveryComponents.push_back(component);
 
-    if (!component->state_topic.empty())
+    if (component->component == "sensor")
     {
-        this->addStatusTopic(component->state_topic);
+        this->addStatusTopic(component->getStateTopic());
     }
-
-    if (!component->command_topic.empty())
+    else if (component->component == "switch")
     {
-        this->addSubscribeTopic(component->command_topic);
+        this->addSubscribeTopic(component->getCommandTopic());
+        this->addStatusTopic(component->getStateTopic());
+    }
+    else
+    {
+        // Unkenown discovery component
     }
 }
 
