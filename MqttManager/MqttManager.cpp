@@ -165,24 +165,16 @@ void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
 {
     m_discoveryComponents.push_back(component);
 
-    if (component->component == "sensor")
-    {
-        this->addStatusTopic(component->getStateTopic());
-    }
-    else if (component->component == "switch")
-    {
-        this->addSubscribeTopic(component->getCommandTopic());
-        this->addStatusTopic(component->getStateTopic());
-    }
-    else
-    {
-        // Unkenown discovery component
-    }
+    this->addSubscribeTopic(component->getCommandTopic());
+    this->addStatusTopic(component->getStateTopic());
 }
 
 void MqttManager::addStatusTopic(std::string statusTopic)
 {
-    m_statusTopics[statusTopic] = "";
+    if (!statusTopic.empty())
+    {
+        m_statusTopics[statusTopic] = "";
+    }
 }
 
 void MqttManager::clearStatusTopics()
@@ -192,7 +184,10 @@ void MqttManager::clearStatusTopics()
 
 void MqttManager::addSubscribeTopic(std::string subscribeTopic)
 {
-    m_subscribeTopics.push_back(subscribeTopic);
+    if (!subscribeTopic.empty())
+    {
+        m_subscribeTopics.push_back(subscribeTopic);
+    }
 }
 
 void MqttManager::clearSubscribeTopics()

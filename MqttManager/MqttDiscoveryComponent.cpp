@@ -6,6 +6,15 @@ MqttDiscoveryComponent::MqttDiscoveryComponent(std::string component, std::strin
     this->entity_id = entity_id;
 
     this->setConfigurtionVariables("name", entity_id.replace(entity_id.begin(), entity_id.end(), "_", " "));
+
+    if (component == "light" || component == "switch")
+    {
+        this->setConfigurtionVariables("command_topic", discovery_prefix + "/" + component + "/" + entity_id + "/" + command_suffix);
+    }
+    else
+    {
+        this->setConfigurtionVariables("command_topic", "");
+    }
 }
 
 void MqttDiscoveryComponent::setConfigurtionVariables(std::string configKey, std::string configValue);
@@ -23,12 +32,19 @@ std::string MqttDiscoveryComponent::getConfigTopic()
 
 std::string MqttDiscoveryComponent::getStateTopic()
 {
-    state_topic = discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix;
+    if (m_fields.find("state_topic") != m_fields.end())
+    {
+        return m_fields.["state_topic"];
+    }
+    else
+    {
+        return (discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix);
+    }
 }
 
 std::string MqttDiscoveryComponent::getCommandTopic()
 {
-    state_topic = discovery_prefix + "/" + component + "/" + entity_id + "/" + command_suffix;
+    return m_fields.["command_topic"];
 }
 
 std::string MqttDiscoveryComponent::getConfigPayload()
