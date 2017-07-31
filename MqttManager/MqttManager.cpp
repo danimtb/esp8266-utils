@@ -110,12 +110,12 @@ void MqttManager::publishDeviceStatusInfo()
     }
     else
     {
-        this->publishMQTT(m_deviceNameSensor->state_topic, m_deviceName);
-        this->publishMQTT(m_deviceIpSensor->state_topic, m_deviceIP);
-        this->publishMQTT(m_deviceMacSensor->state_topic, m_deviceMac);
-        this->publishMQTT(m_deviceHardwareSensor->state_topic, m_hardware);
-        this->publishMQTT(m_deviceFirmwareSensor->state_topic, m_firmware);
-        this->publishMQTT(m_deviceFirmwareVersionSensor->state_topic, m_firmwareVersion);
+        this->publishMQTT(m_deviceNameSensor->getStateTopic(), m_deviceName);
+        this->publishMQTT(m_deviceIpSensor->getStateTopic(), m_deviceIP);
+        this->publishMQTT(m_deviceMacSensor->getStateTopic(), m_deviceMac);
+        this->publishMQTT(m_deviceHardwareSensor->getStateTopic(), m_hardware);
+        this->publishMQTT(m_deviceFirmwareSensor->getStateTopic(), m_firmware);
+        this->publishMQTT(m_deviceFirmwareVersionSensor->getStateTopic(), m_firmwareVersion);
     }
 
     this->refreshStatusTopics();

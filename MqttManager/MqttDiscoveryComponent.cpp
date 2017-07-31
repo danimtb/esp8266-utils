@@ -17,7 +17,7 @@ MqttDiscoveryComponent::MqttDiscoveryComponent(std::string component, std::strin
     }
 }
 
-void MqttDiscoveryComponent::setConfigurtionVariables(std::string configKey, std::string configValue);
+void MqttDiscoveryComponent::setConfigurtionVariables(std::string configKey, std::string configValue)
 {
     if (!configValue.empty())
     {
@@ -34,7 +34,7 @@ std::string MqttDiscoveryComponent::getStateTopic()
 {
     if (m_fields.find("state_topic") != m_fields.end())
     {
-        return m_fields.["state_topic"];
+        return m_fields["state_topic"];
     }
     else
     {
@@ -44,7 +44,7 @@ std::string MqttDiscoveryComponent::getStateTopic()
 
 std::string MqttDiscoveryComponent::getCommandTopic()
 {
-    return m_fields.["command_topic"];
+    return m_fields["command_topic"];
 }
 
 std::string MqttDiscoveryComponent::getConfigPayload()
