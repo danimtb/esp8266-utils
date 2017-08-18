@@ -36,6 +36,7 @@ void MqttManager::setup(String mqttServer, String mqttPort, String mqttUsername,
     m_mqttClient.onMessage(onMqttMessage);
 
     m_mqttClient.setCleanSession(true);
+    m_mqttClient.setKeepAlive(30);
     m_mqttClient.setCredentials(m_mqttUsername.c_str(), m_mqttPassword.c_str());
     m_mqttClient.setServer(server, m_mqttPort);
 
