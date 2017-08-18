@@ -2,11 +2,13 @@
 
 void shortPressCallback() {}
 void longPressCallback() {}
-void longlongPressCallback() {}
+void veryLongPressCallback() {}
+void ultraLongPressCallback() {}
 
 Button::Button()
 {
-    m_longlongPressCallback = &longlongPressCallback;
+    m_ultraLongPressCallback = &ultraLongPressCallback;
+    m_veryLongPressCallback = &veryLongPressCallback;
     m_longPressCallback = &longPressCallback;
     m_shortPressCallback = &shortPressCallback;
 
@@ -65,7 +67,11 @@ void Button::loop()
 
         if (millis() - m_millisSincePressed > 10000)
         {
-            m_longlongPressCallback();
+            m_ultraLongPressCallback();
+        }
+        else if (millis() - m_millisSincePressed > 5000)
+        {
+            m_veryLongPressCallback();
         }
         else if (millis() - m_millisSincePressed > 500)
         {
@@ -94,7 +100,12 @@ void Button::setLongPressCallback(void (*callback)())
     m_longPressCallback = callback;
 }
 
-void Button::setLongLongPressCallback(void (*callback)())
+void Button::setVeryLongPressCallback(void (*callback)())
 {
-    m_longlongPressCallback = callback;
+    m_veryLongPressCallback = callback;
+}
+
+void Button::setUltraLongPressCallback(void (*callback)())
+{
+    m_ultraLongPressCallback = callback;
 }

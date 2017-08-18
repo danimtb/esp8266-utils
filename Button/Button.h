@@ -19,7 +19,8 @@ class Button
     bool isPressed();
     void setShortPressCallback(void (*callback)());
     void setLongPressCallback(void (*callback)());
-    void setLongLongPressCallback(void (*callback)());
+    void setVeryLongPressCallback(void (*callback)());
+    void setUltraLongPressCallback(void (*callback)());
     void loop();
 
   private:
@@ -32,7 +33,8 @@ class Button
 
     void (*m_shortPressCallback)(void);
     void (*m_longPressCallback)(void);
-    void (*m_longlongPressCallback)(void);
+    void (*m_veryLongPressCallback)(void);
+    void (*m_ultraLongPressCallback)(void);
 };
 
 #endif
