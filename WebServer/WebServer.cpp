@@ -28,8 +28,8 @@ void WebServer::webServerHandleSubmit()
     {
         for (uint8_t i = 0; i < m_server->args(); i++)
         {
-            std::string inputField(m_server->argName(i).c_str());
-            std::string inputContent(m_server->arg(i).c_str());
+            String inputField(m_server->argName(i).c_str());
+            String inputContent(m_server->arg(i).c_str());
             m_inputFieldsContent[inputField] = inputContent;
         }
 
@@ -61,7 +61,7 @@ WebServer::~WebServer()
 }
 
 
-void WebServer::setup(std::string htmlPagePath, void (*submitCallback)(std::map<std::string, std::string>))
+void WebServer::setup(String htmlPagePath, void (*submitCallback)(std::map<String, String>))
 {
     m_server->on("/", handleRoot);
     m_server->on("/data", handleData);
@@ -71,7 +71,7 @@ void WebServer::setup(std::string htmlPagePath, void (*submitCallback)(std::map<
     this->setSubmitCallback(submitCallback);
 }
 
-void WebServer::setData(std::vector<std::pair<std::string, std::string>> data)
+void WebServer::setData(std::vector<std::pair<String, String>> data)
 {
     StaticJsonBuffer<500> jsonDataBuffer; // TODO: Check buffer size
     JsonObject& jsonDataObject = jsonDataBuffer.createObject();
@@ -101,12 +101,12 @@ void WebServer::loop()
     m_server->handleClient();
 }
 
-void WebServer::setHtmlPagePath(std::string htmlPagePath)
+void WebServer::setHtmlPagePath(String htmlPagePath)
 {
     m_htmlPagePath = htmlPagePath;
 }
 
-void WebServer::setSubmitCallback(void (*submitCallback)(std::map<std::string, std::string>))
+void WebServer::setSubmitCallback(void (*submitCallback)(std::map<String, String>))
 {
     m_submitCallback = submitCallback;
 }

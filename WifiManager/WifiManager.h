@@ -15,15 +15,15 @@
 class WifiManager
 {
 private:
-    std::string m_staSSID;
-    std::string m_staPASS;
-    std::string m_apSSID;
+    String m_staSSID;
+    String m_staPASS;
+    String m_apSSID;
 
     IPAddress m_ip;
     IPAddress m_mask;
     IPAddress m_gateway;
 
-    std::string m_macAddress;
+    String m_macAddress;
 
     bool m_staMode;
     bool m_apMode;
@@ -35,7 +35,7 @@ private:
 public:
     WifiManager();
 
-    void setup(std::string staSSID, std::string staPASS, std::string ip, std::string mask, std::string gateway, std::string apSSID);
+    void setup(String staSSID, String staPASS, String ip, String mask, String gateway, String apSSID);
 
     void connectStaWifi();
     void createApWifi();

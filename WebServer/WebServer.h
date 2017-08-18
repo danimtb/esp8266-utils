@@ -17,13 +17,13 @@ private:
     WebServer(WebServer const&);              // Singleton: Don't Implement
     void operator=(WebServer const&); // Singleton: Don't implement
 
-    std::map<std::string, std::string> m_inputFieldsContent;
-    void (*m_submitCallback)(std::map<std::string, std::string>);
-    std::string m_htmlPagePath;
+    std::map<String, String> m_inputFieldsContent;
+    void (*m_submitCallback)(std::map<String, String>);
+    String m_htmlPagePath;
     File m_htmlPage;
 
-    void setSubmitCallback(void (*submitCallback)(std::map<std::string, std::string>));
-    void setHtmlPagePath(std::string htmlPagePath);
+    void setSubmitCallback(void (*submitCallback)(std::map<String, String>));
+    void setHtmlPagePath(String htmlPagePath);
 
     String m_jsonDataString;
 
@@ -35,9 +35,9 @@ public:
     void webServerHandleData();
     void webServerHandleSubmit();
 
-    std::map<std::string, std::string> getInputFieldsContent();
-    void setup(std::string htmlPagePath, void (*submitCallback)(std::map<std::string, std::string>));
-    void setData(std::vector<std::pair<std::string, std::string>> data);
+    std::map<String, String> getInputFieldsContent();
+    void setup(String htmlPagePath, void (*submitCallback)(std::map<String, String>));
+    void setData(std::vector<std::pair<String, String>> data);
     void start();
     void stop();
     void loop();

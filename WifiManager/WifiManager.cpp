@@ -6,12 +6,12 @@ WifiManager::WifiManager()
     m_apMode = false;
 }
 
-void WifiManager::setup(std::string staSSID, std::string staPASS, std::string ip, std::string mask, std::string gateway, std::string apSSID)
+void WifiManager::setup(String staSSID, String staPASS, String ip, String mask, String gateway, String apSSID)
 {
     m_staSSID = staSSID;
     m_staPASS = staPASS;
 
-    if (apSSID.empty())
+    if (apSSID.length() == 0)
     {
         m_apSSID = "CONFIG DEVICE";
     }

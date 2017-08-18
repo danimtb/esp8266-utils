@@ -14,16 +14,16 @@ DataManager::DataManager()
                         );
 }
 
-std::string DataManager::get(std::string key)
+String DataManager::get(String key)
 {
     String value;
 
-    Embedis::get(String(key.c_str()), value);
+    Embedis::get(key, value);
 
-    return value.c_str();
+    return value;
 }
 
-void DataManager::set(std::string key, std::string value)
+void DataManager::set(String key, String value)
 {
-    Embedis::set(String(key.c_str()), String(value.c_str()));
+    Embedis::set(key, value);
 }

@@ -10,24 +10,24 @@
 class MqttDiscoveryComponent
 {
 private:
-    std::map<std::string, std::string> m_fields;
+    std::map<String, String> m_fields;
 
 public:
-    MqttDiscoveryComponent(std::string component, std::string entity_id);
-    void setConfigurtionVariables(std::string configKey, std::string configValue);
+    MqttDiscoveryComponent(String component, String entity_id);
+    void setConfigurtionVariables(String configKey, String configValue);
 
-    std::string discovery_prefix{"homeassistant"};
-    std::string component;
-    std::string entity_id;
-    std::string discovery_suffix{"config"};
-    std::string state_suffix{"state"};
-    std::string command_suffix{"command"};
+    String discovery_prefix{"homeassistant"};
+    String component;
+    String entity_id;
+    String discovery_suffix{"config"};
+    String state_suffix{"state"};
+    String command_suffix{"command"};
 
 
-    std::string getConfigTopic();
-    std::string getStateTopic();
-    std::string getCommandTopic();
-    std::string getConfigPayload();
+    String getConfigTopic();
+    String getStateTopic();
+    String getCommandTopic();
+    String getConfigPayload();
 };
 
 #endif

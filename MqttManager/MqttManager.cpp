@@ -2,7 +2,7 @@
 
 #include "ArduinoJson.h"
 
-void (*messageReceivedCallback)(std::string , std::string);
+void (*messageReceivedCallback)(String, String);
 
 void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties properties, size_t len, size_t index, size_t total)
 {
@@ -22,7 +22,7 @@ MqttManager::MqttManager()
     m_checkConnectivityTimer.setup(RT_ON, m_checkConnectivityTimeOffline);
 }
 
-void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword, bool mqttDiscoveryEnabled)
+void MqttManager::setup(String mqttServer, String mqttPort, String mqttUsername, String mqttPassword, bool mqttDiscoveryEnabled)
 {
     m_mqttServer = mqttServer;
     m_mqttPort = atoi(mqttPort.c_str());
@@ -43,7 +43,7 @@ void MqttManager::setup(std::string mqttServer, std::string mqttPort, std::strin
     m_checkConnectivityTimer.start();
 }
 
-void MqttManager::setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion)
+void MqttManager::setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion)
 {
     m_deviceName = deviceName;
     m_deviceIP = deviceIP;
@@ -106,7 +106,7 @@ void MqttManager::publishDeviceStatusInfo()
 
         deviceDataObject.printTo(deviceDataString);
 
-        this->publishMQTT(m_deviceDataTopic, deviceDataString.c_str());
+        this->publishMQTT(m_deviceDataTopic, deviceDataString);
     }
     else
     {
@@ -150,9 +150,9 @@ void MqttManager::checkConnectivity()
 
 void MqttManager::setDeviceMac()
 {
-    if (m_deviceMac.empty())
+    if (m_deviceMac.length() == 0)
     {
-        m_deviceMac = std::string(WiFi.macAddress().c_str());
+        m_deviceMac = WiFi.macAddress();
     }
 }
 
@@ -169,9 +169,9 @@ void MqttManager::addDiscoveryComponent(MqttDiscoveryComponent * component)
     this->addStatusTopic(component->getStateTopic());
 }
 
-void MqttManager::addStatusTopic(std::string statusTopic)
+void MqttManager::addStatusTopic(String statusTopic)
 {
-    if (!statusTopic.empty())
+    if (statusTopic.length() != 0)
     {
         m_statusTopics[statusTopic] = "";
     }
@@ -182,9 +182,9 @@ void MqttManager::clearStatusTopics()
     m_statusTopics.clear();
 }
 
-void MqttManager::addSubscribeTopic(std::string subscribeTopic)
+void MqttManager::addSubscribeTopic(String subscribeTopic)
 {
-    if (!subscribeTopic.empty())
+    if (subscribeTopic.length() != 0)
     {
         m_subscribeTopics.push_back(subscribeTopic);
     }
@@ -211,7 +211,7 @@ void MqttManager::stopConnection()
     m_checkConnectivityTimer.load(m_checkConnectivityTimeOffline);
 }
 
-void MqttManager::publishMQTT(std::string topic, std::string payload)
+void MqttManager::publishMQTT(String topic, String payload)
 {
     if (m_statusTopics.find(topic) != m_statusTopics.end() && m_statusTopics[topic] != payload)
     {
@@ -228,18 +228,18 @@ void MqttManager::publishMQTT(std::string topic, std::string payload)
     }
 }
 
-void MqttManager::publishMQTT(std::string topic, float payload)
+void MqttManager::publishMQTT(String topic, float payload)
 {
     String output(payload, 1);
     this->publishMQTT(topic, output.c_str());
 }
 
-void MqttManager::setCallback(void (*callback)(std::string , std::string))
+void MqttManager::setCallback(void (*callback)(String , String))
 {
     messageReceivedCallback = callback;
 }
 
-void MqttManager::setLastWillMQTT(std::string topic, const char* payload)
+void MqttManager::setLastWillMQTT(String topic, const char* payload)
 {
     m_mqttClient.setWill(topic.c_str(), 1, true, payload);
 }
@@ -272,7 +272,7 @@ void MqttManager::loop()
 
 void MqttManager::refreshStatusTopics()
 {
-    for (std::map<std::string, std::string>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
+    for (std::map<String, String>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
     {
         m_mqttClient.publish(it->first.c_str(), 1, true, it->second.c_str());
     }

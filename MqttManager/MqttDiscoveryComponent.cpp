@@ -1,11 +1,14 @@
 #include "MqttDiscoveryComponent.h"
 
-MqttDiscoveryComponent::MqttDiscoveryComponent(std::string component, std::string entity_id)
+MqttDiscoveryComponent::MqttDiscoveryComponent(String component, String entity_id)
 {
     this->component = component;
     this->entity_id = entity_id;
 
-    this->setConfigurtionVariables("name", entity_id.replace(entity_id.begin(), entity_id.end(), "_", " "));
+    String name = entity_id;
+    name.replace("_", " ");
+
+    this->setConfigurtionVariables("name", name);
 
     if (component == "light" || component == "switch")
     {
@@ -17,20 +20,20 @@ MqttDiscoveryComponent::MqttDiscoveryComponent(std::string component, std::strin
     }
 }
 
-void MqttDiscoveryComponent::setConfigurtionVariables(std::string configKey, std::string configValue)
+void MqttDiscoveryComponent::setConfigurtionVariables(String configKey, String configValue)
 {
-    if (!configValue.empty())
+    if (configValue.length() != 0)
     {
         m_fields[configKey] = configValue;
     }
 }
 
-std::string MqttDiscoveryComponent::getConfigTopic()
+String MqttDiscoveryComponent::getConfigTopic()
 {
     return discovery_prefix + "/" + component + "/" + entity_id + "/" + discovery_suffix;
 }
 
-std::string MqttDiscoveryComponent::getStateTopic()
+String MqttDiscoveryComponent::getStateTopic()
 {
     if (m_fields.find("state_topic") != m_fields.end())
     {
@@ -42,12 +45,12 @@ std::string MqttDiscoveryComponent::getStateTopic()
     }
 }
 
-std::string MqttDiscoveryComponent::getCommandTopic()
+String MqttDiscoveryComponent::getCommandTopic()
 {
     return m_fields["command_topic"];
 }
 
-std::string MqttDiscoveryComponent::getConfigPayload()
+String MqttDiscoveryComponent::getConfigPayload()
 {
     DynamicJsonBuffer jsonBuffer;
     JsonObject& jsonObject = jsonBuffer.createObject();

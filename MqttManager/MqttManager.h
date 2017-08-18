@@ -20,19 +20,19 @@
 class MqttManager
 {
 private:
-    std::string m_mqttServer;
+    String m_mqttServer;
     uint16_t m_mqttPort;
-    std::string m_mqttUsername;
-    std::string m_mqttPassword;
+    String m_mqttUsername;
+    String m_mqttPassword;
 
-    std::string m_deviceName;
-    std::string m_deviceIP;
-    std::string m_deviceMac;
-    std::string m_hardware;
-    std::string m_firmware;
-    std::string m_firmwareVersion;
+    String m_deviceName;
+    String m_deviceIP;
+    String m_deviceMac;
+    String m_hardware;
+    String m_firmware;
+    String m_firmwareVersion;
 
-    std::string m_deviceDataTopic;
+    String m_deviceDataTopic;
 
     MqttDiscoveryComponent* m_deviceNameSensor;
     MqttDiscoveryComponent* m_deviceIpSensor;
@@ -41,8 +41,8 @@ private:
     MqttDiscoveryComponent* m_deviceFirmwareSensor;
     MqttDiscoveryComponent* m_deviceFirmwareVersionSensor;
 
-    std::map<std::string, std::string> m_statusTopics;
-    std::vector<std::string> m_subscribeTopics;
+    std::map<String, String> m_statusTopics;
+    std::vector<String> m_subscribeTopics;
     std::vector<MqttDiscoveryComponent*> m_discoveryComponents;
 
     AsyncMqttClient m_mqttClient;
@@ -64,28 +64,28 @@ private:
 public:
     MqttManager();
 
-    void setup(std::string mqttServer, std::string mqttPort, std::string mqttUsername, std::string mqttPassword, bool mqttDiscoveryEnabled = false);
+    void setup(String mqttServer, String mqttPort, String mqttUsername, String mqttPassword, bool mqttDiscoveryEnabled = false);
 
-    void setDeviceData(std::string deviceName, std::string hardware, std::string deviceIP, std::string firmware, std::string firmwareVersion);
-    void setCallback(void (*callback)(std::string , std::string));
-    void setLastWillMQTT(std::string topic, const char* payload);
+    void setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion);
+    void setCallback(void (*callback)(String , String));
+    void setLastWillMQTT(String topic, const char* payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
     void enableDiscovery(bool enable);
     void addDiscoveryComponent(MqttDiscoveryComponent* component);
 
-    void addSubscribeTopic(std::string subscribeTopic);
+    void addSubscribeTopic(String subscribeTopic);
     void clearSubscribeTopics();
 
-    void addStatusTopic(std::string statusTopic);
+    void addStatusTopic(String statusTopic);
     void clearStatusTopics();
 
     void startConnection();
     void stopConnection();
 
-    void publishMQTT(std::string topic, std::string payload);
-    void publishMQTT(std::string topic, float payload);
+    void publishMQTT(String topic, String payload);
+    void publishMQTT(String topic, float payload);
 
     bool connected();
 

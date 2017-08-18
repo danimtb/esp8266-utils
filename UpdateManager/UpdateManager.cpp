@@ -9,7 +9,7 @@ UpdateManager::UpdateManager()
     m_checkUpdateTimer.setup(RT_ON, 600000); // 10 minutes
 }
 
-void UpdateManager::setup(std::string host, std::string firmware, std::string firmwareVersion, std::string hardware)
+void UpdateManager::setup(String host, String firmware, String firmwareVersion, String hardware)
 {
     m_host = host;
     m_firmware = firmware;
@@ -19,9 +19,9 @@ void UpdateManager::setup(std::string host, std::string firmware, std::string fi
     m_checkUpdateTimer.start();
 }
 
-int16_t UpdateManager::getServerResponse(std::string &payload)
+int16_t UpdateManager::getServerResponse(String &payload)
 {
-    std::string request = m_host + "/" + m_firmware + "/" + m_firmwareVersion + "/" + m_hardware;
+    String request = m_host + "/" + m_firmware + "/" + m_firmwareVersion + "/" + m_hardware;
 
     HTTPClient http;
     http.begin((char *)request.c_str());
@@ -46,16 +46,16 @@ int16_t UpdateManager::getServerResponse(std::string &payload)
 
 void UpdateManager::checkUpdate()
 {
-    std::string payload;
-    std::string firmwareDownload = "";
-    std::string spiffsDownload = "";
+    String payload;
+    String firmwareDownload = "";
+    String spiffsDownload = "";
 
     uint16_t httpCode = this->getServerResponse(payload);
 
 
     if (httpCode == 200)
     {
-        if (!payload.empty())
+        if (payload.length() != 0)
         {
             StaticJsonBuffer<500> jsonBuffer;
             JsonObject& response = jsonBuffer.parseObject(payload.c_str());
@@ -103,7 +103,7 @@ void UpdateManager::checkUpdate()
     this->update(firmwareDownload, spiffsDownload);
 }
 
-void UpdateManager::update(std::string firmwarePath, std::string spiffsPath)
+void UpdateManager::update(String firmwarePath, String spiffsPath)
 {
     firmwarePath = m_host + firmwarePath;
     spiffsPath = m_host + spiffsPath;
@@ -119,11 +119,11 @@ void UpdateManager::update(std::string firmwarePath, std::string spiffsPath)
     }
 }
 
-bool UpdateManager::updateSpiffs(std::string spiffsUrl)
+bool UpdateManager::updateSpiffs(String spiffsUrl)
 {
     bool spiffsSuccessful = false;
 
-    if (!spiffsUrl.empty())
+    if (spiffsUrl.length() != 0)
     {
         t_httpUpdate_return ret = ESPhttpUpdate.updateSpiffs(spiffsUrl.c_str());
 
@@ -144,11 +144,11 @@ bool UpdateManager::updateSpiffs(std::string spiffsUrl)
     return spiffsSuccessful;
 }
 
-bool UpdateManager::updateFirmware(std::string firmwareUrl)
+bool UpdateManager::updateFirmware(String firmwareUrl)
 {
     bool firmwareSuccessful = false;
 
-    if (!firmwareUrl.empty())
+    if (firmwareUrl.length() != 0)
     {
         t_httpUpdate_return ret = ESPhttpUpdate.update(firmwareUrl.c_str());
 

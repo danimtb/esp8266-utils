@@ -4,8 +4,6 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
-#include <cstdint>
-#include <string>
 
 #include "Embedis.h"
 #include "spi_flash.h"
@@ -17,9 +15,8 @@ private:
 
 public:
     DataManager();
-    std::string get(std::string key);
-    void set(std::string key, std::string value);
-
+    String get(String key);
+    void set(String key, String value);
 };
 
 #endif
