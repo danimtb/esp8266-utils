@@ -15,6 +15,7 @@ MqttManager::MqttManager()
 {
     m_connected = false;
 
+
     m_checkConnectivityTimeOnline = 20000;
     m_checkConnectivityTimeOffline = 3000;
 
@@ -98,12 +99,12 @@ void MqttManager::publishDeviceStatusInfo()
         JsonObject& deviceDataObject = deviceDataBuffer.createObject();
         String deviceDataString;
 
-        deviceDataObject["name"] = m_deviceName.c_str();
-        deviceDataObject["ip"] = m_deviceIP.c_str();
-        deviceDataObject["mac"] = m_deviceMac.c_str();
-        deviceDataObject["hardware"] = m_hardware.c_str();
-        deviceDataObject["firmware"] = m_firmware.c_str();
-        deviceDataObject["firmware_version"] = m_firmwareVersion.c_str();
+        deviceDataObject["name"] = m_deviceName;
+        deviceDataObject["ip"] = m_deviceIP;
+        deviceDataObject["mac"] = m_deviceMac;
+        deviceDataObject["hardware"] = m_hardware;
+        deviceDataObject["firmware"] = m_firmware;
+        deviceDataObject["firmware_version"] = m_firmwareVersion;
 
         deviceDataObject.printTo(deviceDataString);
 
