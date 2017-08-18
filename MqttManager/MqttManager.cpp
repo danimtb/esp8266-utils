@@ -225,7 +225,7 @@ void MqttManager::publishMQTT(String topic, String payload)
     }
     else if (m_connected)
     {
-        m_mqttClient.publish(topic.c_str(), 0, false, payload.c_str());
+        m_mqttClient.publish(topic.c_str(), 1, true, payload.c_str());
     }
 }
 
