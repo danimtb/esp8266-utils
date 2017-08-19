@@ -12,8 +12,15 @@ ToggleSwitch::ToggleSwitch()
     m_tripleToggleCallback = &tripleToggleCallback;
     m_quadrupleToggleCallback = &quadrupleToggleCallback;
 
+    m_toggle = false;
+    m_singleToggle = false;
+    m_doubleToggle = false;
+    m_tripleToggle = false;
+    m_quadrupleToggle = false;
+
     m_debounceTimer.setup(RT_ON, 100);
-    m_overTimer.setup(RT_ON, 400);
+    m_debounceTimer.start();
+    m_overTimer.setup(PULSE, 400);
 }
 
 void ToggleSwitch::setup(uint8_t pin, ToggleSwitchType type)
@@ -23,28 +30,25 @@ void ToggleSwitch::setup(uint8_t pin, ToggleSwitchType type)
     if (type == ToggleSwitchType::PULLUP)
     {
         pinMode(m_pin, INPUT);
-        m_state = LOW;
     }
     else if (type == ToggleSwitchType::PULLUP_INTERNAL)
     {
         pinMode(m_pin, INPUT_PULLUP);
-        m_state = LOW;
     }
     else if (type == ToggleSwitchType::PULLDOWN)
     {
         pinMode(m_pin, INPUT);
-        m_state = HIGH;
     }
     else if (type == ToggleSwitchType::PULLDOWN_INTERNAL_16)
     {
         pinMode(m_pin, INPUT_PULLDOWN_16);
-        m_state = HIGH;
     }
     else
     {
         pinMode(m_pin, INPUT);
-        m_state = LOW;
     }
+
+    m_state = digitalRead(m_pin);
 }
 
 bool ToggleSwitch::getState()
@@ -55,7 +59,7 @@ bool ToggleSwitch::getState()
 bool ToggleSwitch::toggled()
 {
     bool toggled;
-    uint8_t digRead = digitalRead(m_pin);
+    int digRead = digitalRead(m_pin);
 
     if (digRead != m_state)
     {
@@ -73,69 +77,74 @@ bool ToggleSwitch::toggled()
 
 void ToggleSwitch::loop()
 {
-    if (toggled())
+    if (toggled() && m_debounceTimer.check())
     {
+        Serial.println("toggled");
         m_debounceTimer.start();
     }
-    else
-    {
-        if (m_debounceTimer.check())
-        {
-            if (!m_singleToggle)
-            {
-                m_singleToggle = true;
-                m_overTimer.start();
-            }
-            else if (m_singleToggle && !m_doubleToggle)
-            {
-                m_doubleToggle = true;
-                m_overTimer.start();
-            }
-            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle)
-            {
-                m_tripleToggle = true;
-                m_overTimer.start();
-            }
-            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
-            {
-                m_quadrupleToggle = true;
-                m_overTimer.start();
-            }
-            else
-            {
-                // Unknown number of toggles
-            }
-        }
+//    else
+//    {
+//        if (m_toggle && m_debounceTimer.check())
+//        {
+//            Serial.println("debouncetimer");
+//            m_toggle = false;
 
-        if (m_overTimer.check())
-        {
-            if (m_singleToggle && m_doubleToggle && m_tripleToggle && m_quadrupleToggle)
-            {
-                m_quadrupleToggleCallback();
-            }
-            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
-            {
-                m_tripleToggleCallback();
-            }
-            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
-            {
-                m_doubleToggleCallback();
-            }
-            else if (m_singleToggle && !m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
-            {
-                m_singleToggleCallback();
-            }
-            else
-            {
-                // Unknown number of toggles
-            }
+//            if (!m_singleToggle)
+//            {
+//                m_singleToggle = true;
+//                m_overTimer.start();
+//            }
+//            else if (m_singleToggle && !m_doubleToggle)
+//            {
+//                m_doubleToggle = true;
+//                m_overTimer.start();
+//            }
+//            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle)
+//            {
+//                m_tripleToggle = true;
+//                m_overTimer.start();
+//            }
+//            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
+//            {
+//                m_quadrupleToggle = true;
+//                m_overTimer.start();
+//            }
+//            else
+//            {
+//                // Unknown number of toggles
+//            }
+//        }
 
-            m_singleToggle = false;
-            m_doubleToggle = false;
-            m_tripleToggle = false;
-            m_quadrupleToggle = false;
-        }
-    }
+//        if (m_overTimer.check())
+//        {
+//            Serial.println("overtimer");
+//            if (m_singleToggle && m_doubleToggle && m_tripleToggle && m_quadrupleToggle)
+//            {
+//                m_quadrupleToggleCallback();
+//            }
+//            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
+//            {
+//                m_tripleToggleCallback();
+//            }
+//            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
+//            {
+//                m_doubleToggleCallback();
+//            }
+//            else if (m_singleToggle && !m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
+//            {
+//                m_singleToggleCallback();
+//            }
+//            else
+//            {
+//                // Unknown number of toggles
+//            }
+
+//            m_singleToggle = false;
+//            m_doubleToggle = false;
+//            m_tripleToggle = false;
+//            m_quadrupleToggle = false;
+//        }
+//    }
 }
 
 void ToggleSwitch::setSingleToggleCallback(void (*callback)())

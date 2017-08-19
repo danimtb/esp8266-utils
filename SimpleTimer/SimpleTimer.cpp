@@ -32,7 +32,7 @@ bool SimpleTimer::check()
 {
     if (m_type == PULSE)
     {
-        if ((millis() - m_currentMillis) > (m_milliSeconds - 500) && (millis() - m_currentMillis) < (m_milliSeconds + 500))
+        if ((millis() - m_currentMillis) > (m_milliSeconds - 10) && (millis() - m_currentMillis) < (m_milliSeconds + 10))
         {
             return true;
         }
