@@ -1,43 +1,41 @@
-#include "Switch.h"
+#include "ToggleSwitch.h"
 
 void singleToggleCallback() {}
 void doubleToggleCallback() {}
 void tripleToggleCallback() {}
 void quadrupleToggleCallback() {}
 
-Switch::Switch()
+ToggleSwitch::ToggleSwitch()
 {
-    m_ultraLongPressCallback = &ultraLongPressCallback;
-    m_veryLongPressCallback = &veryLongPressCallback;
-    m_longPressCallback = &longPressCallback;
-    m_shortPressCallback = &shortPressCallback;
-
-    m_millisSincePressed = 0;
+    m_singleToggleCallback = &singleToggleCallback;
+    m_doubleToggleCallback = &doubleToggleCallback;
+    m_tripleToggleCallback = &tripleToggleCallback;
+    m_quadrupleToggleCallback = &quadrupleToggleCallback;
 
     m_debounceTimer.setup(RT_ON, 100);
     m_overTimer.setup(RT_ON, 400);
 }
 
-void Switch::setup(uint8_t pin, ButtonType type)
+void ToggleSwitch::setup(uint8_t pin, ToggleSwitchType type)
 {
     m_pin = pin;
 
-    if (type == ButtonType::PULLUP)
+    if (type == ToggleSwitchType::PULLUP)
     {
         pinMode(m_pin, INPUT);
         m_state = LOW;
     }
-    else if (type == ButtonType::PULLUP_INTERNAL)
+    else if (type == ToggleSwitchType::PULLUP_INTERNAL)
     {
         pinMode(m_pin, INPUT_PULLUP);
         m_state = LOW;
     }
-    else if (type == ButtonType::PULLDOWN)
+    else if (type == ToggleSwitchType::PULLDOWN)
     {
         pinMode(m_pin, INPUT);
         m_state = HIGH;
     }
-    else if (type == ButtonType::PULLDOWN_INTERNAL_16)
+    else if (type == ToggleSwitchType::PULLDOWN_INTERNAL_16)
     {
         pinMode(m_pin, INPUT_PULLDOWN_16);
         m_state = HIGH;
@@ -49,16 +47,17 @@ void Switch::setup(uint8_t pin, ButtonType type)
     }
 }
 
-bool Switch::getState()
+bool ToggleSwitch::getState()
 {
     return digitalRead(m_pin) == HIGH;
 }
 
-bool Switch::toggled()
+bool ToggleSwitch::toggled()
 {
     bool toggled;
+    uint8_t digRead = digitalRead(m_pin);
 
-    if (digitalRead(m_pin) != m_state)
+    if (digRead != m_state)
     {
         toggled = true;
     }
@@ -67,12 +66,12 @@ bool Switch::toggled()
         toggled = false;
     }
 
-    m_state = digitalRead(m_pin);
+    m_state = digRead;
 
     return toggled;
 }
 
-void Switch::loop()
+void ToggleSwitch::loop()
 {
     if (toggled())
     {
@@ -139,22 +138,22 @@ void Switch::loop()
     }
 }
 
-void Switch::setSingleToggleCallback(void (*callback)())
+void ToggleSwitch::setSingleToggleCallback(void (*callback)())
 {
     m_singleToggleCallback = callback;
 }
 
-void Switch::setDoubleToggleCallback(void (*callback)())
+void ToggleSwitch::setDoubleToggleCallback(void (*callback)())
 {
     m_doubleToggleCallback = callback;
 }
 
-void Switch::setTripleToggleCallback(void (*callback)())
+void ToggleSwitch::setTripleToggleCallback(void (*callback)())
 {
     m_tripleToggleCallback = callback;
 }
 
-void Switch::setQuadrupleToggleCallback(void (*callback)())
+void ToggleSwitch::setQuadrupleToggleCallback(void (*callback)())
 {
     m_quadrupleToggleCallback = callback;
 }

@@ -1,11 +1,11 @@
-#ifndef SWITCH_H
-#define SWITCH_H
+#ifndef TOGGLESWITCH_H
+#define TOGGLESWITCH_H
 
 #include "Arduino.h"
 
 #include "SimpleTimer.h"
 
-enum class SwitchType
+enum class ToggleSwitchType
 {
     PULLUP,
     PULLDOWN,
@@ -13,11 +13,11 @@ enum class SwitchType
     PULLDOWN_INTERNAL_16
 };
 
-class Switch
+class ToggleSwitch
 {
   public:
-    Switch();
-    void setup(uint8_t pin, ButtonType type);
+    ToggleSwitch();
+    void setup(uint8_t pin, ToggleSwitchType type);
     bool getState();
     void setSingleToggleCallback(void (*callback)());
     void setDoubleToggleCallback(void (*callback)());
@@ -34,9 +34,6 @@ class Switch
     bool m_quadrupleToggle;
     SimpleTimer m_debounceTimer;
     SimpleTimer m_overTimer;
-
-
-
 
     bool toggled();
 
