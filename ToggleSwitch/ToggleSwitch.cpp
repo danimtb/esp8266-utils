@@ -79,72 +79,68 @@ void ToggleSwitch::loop()
 {
     if (toggled() && m_debounceTimer.check())
     {
-        Serial.println("toggled");
+        m_toggle = true;
         m_debounceTimer.start();
     }
-//    else
-//    {
-//        if (m_toggle && m_debounceTimer.check())
-//        {
-//            Serial.println("debouncetimer");
-//            m_toggle = false;
 
-//            if (!m_singleToggle)
-//            {
-//                m_singleToggle = true;
-//                m_overTimer.start();
-//            }
-//            else if (m_singleToggle && !m_doubleToggle)
-//            {
-//                m_doubleToggle = true;
-//                m_overTimer.start();
-//            }
-//            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle)
-//            {
-//                m_tripleToggle = true;
-//                m_overTimer.start();
-//            }
-//            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
-//            {
-//                m_quadrupleToggle = true;
-//                m_overTimer.start();
-//            }
-//            else
-//            {
-//                // Unknown number of toggles
-//            }
-//        }
+    if (m_toggle)
+    {
+        m_toggle = false;
 
-//        if (m_overTimer.check())
-//        {
-//            Serial.println("overtimer");
-//            if (m_singleToggle && m_doubleToggle && m_tripleToggle && m_quadrupleToggle)
-//            {
-//                m_quadrupleToggleCallback();
-//            }
-//            else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
-//            {
-//                m_tripleToggleCallback();
-//            }
-//            else if (m_singleToggle && m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
-//            {
-//                m_doubleToggleCallback();
-//            }
-//            else if (m_singleToggle && !m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
-//            {
-//                m_singleToggleCallback();
-//            }
-//            else
-//            {
-//                // Unknown number of toggles
-//            }
+        if (!m_singleToggle)
+        {
+            m_singleToggle = true;
+            m_overTimer.start();
+        }
+        else if (m_singleToggle && !m_doubleToggle)
+        {
+            m_doubleToggle = true;
+            m_overTimer.start();
+        }
+        else if (m_singleToggle && m_doubleToggle && !m_tripleToggle)
+        {
+            m_tripleToggle = true;
+            m_overTimer.start();
+        }
+        else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
+        {
+            m_quadrupleToggle = true;
+            m_overTimer.start();
+        }
+        else
+        {
+            // Unknown number of toggles
+        }
+    }
 
-//            m_singleToggle = false;
-//            m_doubleToggle = false;
-//            m_tripleToggle = false;
-//            m_quadrupleToggle = false;
-//        }
-//    }
+    if (m_overTimer.check())
+    {
+        if (m_singleToggle && m_doubleToggle && m_tripleToggle && m_quadrupleToggle)
+        {
+            m_quadrupleToggleCallback();
+        }
+        else if (m_singleToggle && m_doubleToggle && m_tripleToggle && !m_quadrupleToggle)
+        {
+            m_tripleToggleCallback();
+        }
+        else if (m_singleToggle && m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
+        {
+            m_doubleToggleCallback();
+        }
+        else if (m_singleToggle && !m_doubleToggle && !m_tripleToggle && !m_quadrupleToggle)
+        {
+            m_singleToggleCallback();
+        }
+        else
+        {
+            // Unknown number of toggles
+        }
+
+        m_singleToggle = false;
+        m_doubleToggle = false;
+        m_tripleToggle = false;
+        m_quadrupleToggle = false;
+    }
 }
 
 void ToggleSwitch::setSingleToggleCallback(void (*callback)())
