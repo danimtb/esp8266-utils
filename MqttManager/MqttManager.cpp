@@ -86,7 +86,7 @@ void MqttManager::publishDiscoveryInfo()
     {
         for (auto component : m_discoveryComponents)
         {
-            this->publishMQTT(component->getConfigTopic(), component->getConfigPayload());
+            m_mqttClient.publish(component->getConfigTopic().c_str(), 0, false, component->getConfigPayload().c_str());
         }
     }
 }

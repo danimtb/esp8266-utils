@@ -52,15 +52,15 @@ String MqttDiscoveryComponent::getCommandTopic()
 
 String MqttDiscoveryComponent::getConfigPayload()
 {
-    DynamicJsonBuffer jsonBuffer;
+    StaticJsonBuffer<500> jsonBuffer;
     JsonObject& jsonObject = jsonBuffer.createObject();
     String jsonString;
 
     for(auto i : m_fields)
     {
-        jsonObject[i.first.c_str()] = i.second.c_str();
+        jsonObject[i.first] = i.second;
     }
 
     jsonObject.printTo(jsonString);
-    return jsonString.c_str();
+    return jsonString;
 }
