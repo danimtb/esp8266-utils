@@ -60,22 +60,22 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceNameSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_name");
+        m_deviceNameSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " name");
         m_discoveryComponents.push_back(m_deviceNameSensor);
 
-        m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_IP");
+        m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " IP");
         m_discoveryComponents.push_back(m_deviceIpSensor);
 
-        m_deviceMacSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_MAC");
+        m_deviceMacSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " MAC");
         m_discoveryComponents.push_back(m_deviceMacSensor);
 
-        m_deviceHardwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Hardware");
+        m_deviceHardwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Hardware");
         m_discoveryComponents.push_back(m_deviceHardwareSensor);
 
-        m_deviceFirmwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Firmware");
+        m_deviceFirmwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware");
         m_discoveryComponents.push_back(m_deviceFirmwareSensor);
 
-        m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + "_Firmware_Version");
+        m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware Version");
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
     }
 }
@@ -265,6 +265,7 @@ void MqttManager::loop()
     {
         if (m_deviceStatusInfoTimer.check())
         {
+            this->publishDiscoveryInfo();
             this->publishDeviceStatusInfo();
 
             m_deviceStatusInfoTimer.start(); //restart timer

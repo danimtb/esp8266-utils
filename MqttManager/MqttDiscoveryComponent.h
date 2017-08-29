@@ -13,8 +13,8 @@ private:
     std::map<String, String> m_fields;
 
 public:
-    MqttDiscoveryComponent(String component, String entity_id);
-    void setConfigurtionVariables(String configKey, String configValue);
+    MqttDiscoveryComponent(String component, String name);
+    void setConfigurtionVariable(String configKey, String configValue);
 
     String discovery_prefix{"homeassistant"};
     String component;
