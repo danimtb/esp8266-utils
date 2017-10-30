@@ -60,8 +60,8 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceNameSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " name");
-        m_discoveryComponents.push_back(m_deviceNameSensor);
+        m_deviceStatusSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Status");
+        m_discoveryComponents.push_back(m_deviceStatusSensor);
 
         m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " IP");
         m_discoveryComponents.push_back(m_deviceIpSensor);
@@ -77,6 +77,12 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
 
         m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware Version");
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
+
+        this->setLastWillMQTT(m_deviceStatusSensor->getStateTopic(), "Offline");
+    }
+    else
+    {
+        this->setLastWillMQTT(m_deviceDataTopic + "/status", "Offline");
     }
 }
 
@@ -95,24 +101,16 @@ void MqttManager::publishDeviceStatusInfo()
 {
     if (!m_mqttDiscoveryEnabled)
     {
-        StaticJsonBuffer<200> deviceDataBuffer;
-        JsonObject& deviceDataObject = deviceDataBuffer.createObject();
-        String deviceDataString;
-
-        deviceDataObject["name"] = m_deviceName;
-        deviceDataObject["ip"] = m_deviceIP;
-        deviceDataObject["mac"] = m_deviceMac;
-        deviceDataObject["hardware"] = m_hardware;
-        deviceDataObject["firmware"] = m_firmware;
-        deviceDataObject["firmware_version"] = m_firmwareVersion;
-
-        deviceDataObject.printTo(deviceDataString);
-
-        this->publishMQTT(m_deviceDataTopic, deviceDataString);
+        this->publishMQTT(m_deviceDataTopic + "/status", "Online");
+        this->publishMQTT(m_deviceDataTopic + "/ip", m_deviceIP);
+        this->publishMQTT(m_deviceDataTopic + "/mac", m_deviceMac);
+        this->publishMQTT(m_deviceDataTopic + "/hardware", m_hardware);
+        this->publishMQTT(m_deviceDataTopic + "/firmware", m_firmware);
+        this->publishMQTT(m_deviceDataTopic + "/firmware_version", m_firmwareVersion);
     }
     else
     {
-        this->publishMQTT(m_deviceNameSensor->getStateTopic(), m_deviceName);
+        this->publishMQTT(m_deviceStatusSensor->getStateTopic(), "Online");
         this->publishMQTT(m_deviceIpSensor->getStateTopic(), m_deviceIP);
         this->publishMQTT(m_deviceMacSensor->getStateTopic(), m_deviceMac);
         this->publishMQTT(m_deviceHardwareSensor->getStateTopic(), m_hardware);

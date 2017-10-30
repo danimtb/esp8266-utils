@@ -34,7 +34,7 @@ private:
 
     String m_deviceDataTopic;
 
-    MqttDiscoveryComponent* m_deviceNameSensor;
+    MqttDiscoveryComponent* m_deviceStatusSensor;
     MqttDiscoveryComponent* m_deviceIpSensor;
     MqttDiscoveryComponent* m_deviceMacSensor;
     MqttDiscoveryComponent* m_deviceHardwareSensor;
@@ -60,6 +60,7 @@ private:
     void publishDiscoveryInfo();
     void refreshStatusTopics();
     void checkConnectivity();
+    void setLastWillMQTT(String topic, const char* payload);
 
 public:
     MqttManager();
@@ -68,7 +69,6 @@ public:
 
     void setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion);
     void setCallback(void (*callback)(String , String));
-    void setLastWillMQTT(String topic, const char* payload);
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
