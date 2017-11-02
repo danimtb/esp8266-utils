@@ -14,7 +14,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 MqttManager::MqttManager()
 {
     m_connected = false;
-    lastWillPayload = "Offline";
+    m_lastWillPayload = "Offline";
 
 
     m_checkConnectivityTimeOnline = 20000;
