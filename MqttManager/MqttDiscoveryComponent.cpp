@@ -8,6 +8,7 @@ MqttDiscoveryComponent::MqttDiscoveryComponent(String component, String name)
     this->entity_id.replace(" ", "_");
 
     this->setConfigurtionVariable("name", name);
+    this->setConfigurtionVariable("state_topic", discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix);
 
     if (component == "light" || component == "switch")
     {
@@ -27,24 +28,21 @@ void MqttDiscoveryComponent::setConfigurtionVariable(String configKey, String co
     }
 }
 
-String MqttDiscoveryComponent::getConfigTopic()
+String& MqttDiscoveryComponent::getConfigTopic()
 {
-    return discovery_prefix + "/" + component + "/" + entity_id + "/" + discovery_suffix;
+    m_configTopic = discovery_prefix + "/" + component + "/" + entity_id + "/" + discovery_suffix;
+    return m_configTopic;
 }
 
-String MqttDiscoveryComponent::getStateTopic()
+String& MqttDiscoveryComponent::getStateTopic()
 {
     if (m_fields.find("state_topic") != m_fields.end())
     {
         return m_fields["state_topic"];
     }
-    else
-    {
-        return (discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix);
-    }
 }
 
-String MqttDiscoveryComponent::getCommandTopic()
+String& MqttDiscoveryComponent::getCommandTopic()
 {
     return m_fields["command_topic"];
 }

@@ -22,11 +22,12 @@ public:
     String discovery_suffix{"config"};
     String state_suffix{"state"};
     String command_suffix{"command"};
+    String m_configTopic;
 
 
-    String getConfigTopic();
-    String getStateTopic();
-    String getCommandTopic();
+    String& getConfigTopic();
+    String& getStateTopic();
+    String& getCommandTopic();
     String getConfigPayload();
 };
 

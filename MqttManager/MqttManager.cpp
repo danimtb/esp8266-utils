@@ -14,6 +14,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 MqttManager::MqttManager()
 {
     m_connected = false;
+    lastWillPayload = "Offline";
 
 
     m_checkConnectivityTimeOnline = 20000;
@@ -56,6 +57,7 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
     m_mqttClient.setClientId(m_deviceName.c_str());
 
     m_deviceDataTopic = "/" + m_deviceName;
+    m_lastWillTopic = m_deviceDataTopic + "/status";
 
 
     if (m_mqttDiscoveryEnabled)
@@ -78,11 +80,11 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
         m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware Version");
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
 
-        this->setLastWillMQTT(m_deviceStatusSensor->getStateTopic(), "Offline");
+        this->setLastWillMQTT(m_deviceStatusSensor->getStateTopic(), m_lastWillPayload);
     }
     else
     {
-        this->setLastWillMQTT(m_deviceDataTopic + "/status", "Offline");
+        this->setLastWillMQTT(m_lastWillTopic, m_lastWillPayload);
     }
 }
 
@@ -239,9 +241,9 @@ void MqttManager::setCallback(void (*callback)(String , String))
     messageReceivedCallback = callback;
 }
 
-void MqttManager::setLastWillMQTT(String topic, const char* payload)
+void MqttManager::setLastWillMQTT(const String& topic, const String& payload)
 {
-    m_mqttClient.setWill(topic.c_str(), 1, true, payload);
+    m_mqttClient.setWill(topic.c_str(), 1, true, payload.c_str());
 }
 
 void MqttManager::setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime)

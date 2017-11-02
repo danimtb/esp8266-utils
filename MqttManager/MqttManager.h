@@ -34,6 +34,9 @@ private:
 
     String m_deviceDataTopic;
 
+    String m_lastWillPayload;
+    String m_lastWillTopic;
+
     MqttDiscoveryComponent* m_deviceStatusSensor;
     MqttDiscoveryComponent* m_deviceIpSensor;
     MqttDiscoveryComponent* m_deviceMacSensor;
@@ -60,7 +63,7 @@ private:
     void publishDiscoveryInfo();
     void refreshStatusTopics();
     void checkConnectivity();
-    void setLastWillMQTT(String topic, const char* payload);
+    void setLastWillMQTT(const String& topic, const String& payload);
 
 public:
     MqttManager();
