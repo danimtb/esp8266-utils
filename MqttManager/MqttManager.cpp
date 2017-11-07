@@ -14,7 +14,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 MqttManager::MqttManager()
 {
     m_connected = false;
-    m_lastWillPayload = "Offline";
+    m_lastWillPayload = "off";
 
 
     m_checkConnectivityTimeOnline = 20000;
@@ -62,7 +62,8 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceStatusSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Status");
+        m_deviceStatusSensor = new MqttDiscoveryComponent("binary_sensor", m_deviceName + " Status");
+        m_deviceStatusSensor->setConfigurtionVariable("device_class", "connectivity");
         m_discoveryComponents.push_back(m_deviceStatusSensor);
 
         m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " IP");
@@ -103,7 +104,7 @@ void MqttManager::publishDeviceStatusInfo()
 {
     if (!m_mqttDiscoveryEnabled)
     {
-        this->publishMQTT(m_deviceDataTopic + "/status", "Online");
+        this->publishMQTT(m_deviceDataTopic + "/status", "on");
         this->publishMQTT(m_deviceDataTopic + "/ip", m_deviceIP);
         this->publishMQTT(m_deviceDataTopic + "/mac", m_deviceMac);
         this->publishMQTT(m_deviceDataTopic + "/hardware", m_hardware);
@@ -112,7 +113,7 @@ void MqttManager::publishDeviceStatusInfo()
     }
     else
     {
-        this->publishMQTT(m_deviceStatusSensor->getStateTopic(), "Online");
+        this->publishMQTT(m_deviceStatusSensor->getStateTopic(), "on");
         this->publishMQTT(m_deviceIpSensor->getStateTopic(), m_deviceIP);
         this->publishMQTT(m_deviceMacSensor->getStateTopic(), m_deviceMac);
         this->publishMQTT(m_deviceHardwareSensor->getStateTopic(), m_hardware);
