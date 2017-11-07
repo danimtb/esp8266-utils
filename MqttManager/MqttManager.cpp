@@ -14,7 +14,7 @@ void onMqttMessage(char* topic, char* payload, AsyncMqttClientMessageProperties 
 MqttManager::MqttManager()
 {
     m_connected = false;
-    m_lastWillPayload = "off";
+    m_lastWillPayload = "OFF";
 
 
     m_checkConnectivityTimeOnline = 20000;
@@ -104,7 +104,7 @@ void MqttManager::publishDeviceStatusInfo()
 {
     if (!m_mqttDiscoveryEnabled)
     {
-        this->publishMQTT(m_deviceDataTopic + "/status", "on");
+        this->publishMQTT(m_deviceDataTopic + "/status", "ON");
         this->publishMQTT(m_deviceDataTopic + "/ip", m_deviceIP);
         this->publishMQTT(m_deviceDataTopic + "/mac", m_deviceMac);
         this->publishMQTT(m_deviceDataTopic + "/hardware", m_hardware);
@@ -113,7 +113,7 @@ void MqttManager::publishDeviceStatusInfo()
     }
     else
     {
-        this->publishMQTT(m_deviceStatusSensor->getStateTopic(), "on");
+        this->publishMQTT(m_deviceStatusSensor->getStateTopic(), "ON");
         this->publishMQTT(m_deviceIpSensor->getStateTopic(), m_deviceIP);
         this->publishMQTT(m_deviceMacSensor->getStateTopic(), m_deviceMac);
         this->publishMQTT(m_deviceHardwareSensor->getStateTopic(), m_hardware);
