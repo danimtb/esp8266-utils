@@ -22,6 +22,13 @@ private:
     HLW8012 m_hlw8012;
     SimpleTimer m_powTimer;
 
+    double m_current;
+    uint16_t m_voltage;
+    uint16_t m_activePower;
+    uint16_t m_apparentPower;
+    double m_powerFactor;
+    uint16_t m_reactivePower;
+
 public:
 
     double getCurrent();
