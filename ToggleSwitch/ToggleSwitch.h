@@ -29,6 +29,8 @@ class ToggleSwitch
     uint8_t m_pin;
     int m_state;
     bool m_toggle;
+    int m_tempToggleState;
+    int m_toggledState;
     bool m_singleToggle;
     bool m_doubleToggle;
     bool m_tripleToggle;

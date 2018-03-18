@@ -18,9 +18,9 @@ ToggleSwitch::ToggleSwitch()
     m_tripleToggle = false;
     m_quadrupleToggle = false;
 
-    m_debounceTimer.setup(RT_ON, 100);
+    m_debounceTimer.setup(RT_ON, 150);
     m_debounceTimer.start();
-    m_overTimer.setup(PULSE, 400);
+    m_overTimer.setup(PULSE, 100);
 }
 
 void ToggleSwitch::setup(uint8_t pin, ToggleSwitchType type)
@@ -61,7 +61,7 @@ bool ToggleSwitch::toggled()
     bool toggled;
     int digRead = digitalRead(m_pin);
 
-    if (digRead != m_state)
+    if (digRead != m_toggledState)
     {
         toggled = true;
     }
@@ -70,17 +70,33 @@ bool ToggleSwitch::toggled()
         toggled = false;
     }
 
-    m_state = digRead;
+    m_toggledState = digRead;
 
     return toggled;
 }
 
 void ToggleSwitch::loop()
 {
-    if (toggled() && m_debounceTimer.check())
+    if (toggled())
     {
-        m_toggle = true;
-        m_debounceTimer.start();
+        if (m_debounceTimer.check())
+        {
+            m_tempToggleState = m_toggledState;
+            m_debounceTimer.start();
+        }
+    }
+
+    if (m_debounceTimer.check() && m_tempToggleState != m_state)
+    {
+        if (m_tempToggleState == m_toggledState)
+        {
+            m_state = m_toggledState;
+            m_toggle = true;
+        }
+    }
+    else
+    {
+        m_toggle = false;
     }
 
     if (m_toggle)
