@@ -1,7 +1,6 @@
 #ifndef MQTTDISCOVERYCOMPONENT_H
 #define MQTTDISCOVERYCOMPONENT_H
 
-#include <string>
 #include <map>
 
 #include "ArduinoJson.h"
@@ -13,10 +12,10 @@ private:
     std::map<String, String> m_fields;
 
 public:
-    MqttDiscoveryComponent(String component, String name);
+    MqttDiscoveryComponent(String component, String name, String discovery_prefix="homeassistant");
     void setConfigurtionVariable(String configKey, String configValue);
 
-    String discovery_prefix{"homeassistant"};
+    String discovery_prefix;
     String component;
     String entity_id;
     String discovery_suffix{"config"};

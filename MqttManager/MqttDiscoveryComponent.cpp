@@ -1,18 +1,20 @@
 #include "MqttDiscoveryComponent.h"
 
-MqttDiscoveryComponent::MqttDiscoveryComponent(String component, String name)
+
+MqttDiscoveryComponent::MqttDiscoveryComponent(String component, String name, String discovery_prefix)
 {
     this->component = component;
     this->entity_id = name;
+    this->discovery_prefix = discovery_prefix;
 
     this->entity_id.replace(" ", "_");
 
     this->setConfigurtionVariable("name", name);
-    this->setConfigurtionVariable("state_topic", discovery_prefix + "/" + component + "/" + entity_id + "/" + state_suffix);
+    this->setConfigurtionVariable("state_topic", this->discovery_prefix + "/" + this->component + "/" + this->entity_id + "/" + this->state_suffix);
 
     if (component == "light" || component == "switch")
     {
-        this->setConfigurtionVariable("command_topic", discovery_prefix + "/" + component + "/" + entity_id + "/" + command_suffix);
+        this->setConfigurtionVariable("command_topic", this->discovery_prefix + "/" + this->component + "/" + this->entity_id + "/" + this->command_suffix);
     }
     else
     {

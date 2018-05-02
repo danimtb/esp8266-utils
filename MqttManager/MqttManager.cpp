@@ -62,29 +62,23 @@ void MqttManager::setDeviceData(String deviceName, String hardware, String devic
 
     if (m_mqttDiscoveryEnabled)
     {
-        m_deviceStatusSensor = new MqttDiscoveryComponent("binary_sensor", m_deviceName + " Status");
-        m_deviceStatusSensor->discovery_prefix = discovery_prefix;
+        m_deviceStatusSensor = new MqttDiscoveryComponent("binary_sensor", m_deviceName + " Status", discovery_prefix);
         m_deviceStatusSensor->setConfigurtionVariable("device_class", "connectivity");
         m_discoveryComponents.push_back(m_deviceStatusSensor);
 
-        m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " IP");
-        m_deviceIpSensor->discovery_prefix = discovery_prefix;
+        m_deviceIpSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " IP", discovery_prefix);
         m_discoveryComponents.push_back(m_deviceIpSensor);
 
-        m_deviceMacSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " MAC");
-        m_deviceMacSensor->discovery_prefix = discovery_prefix;
+        m_deviceMacSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " MAC", discovery_prefix);
         m_discoveryComponents.push_back(m_deviceMacSensor);
 
-        m_deviceHardwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Hardware");
-        m_deviceHardwareSensor->discovery_prefix = discovery_prefix;
+        m_deviceHardwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Hardware", discovery_prefix);
         m_discoveryComponents.push_back(m_deviceHardwareSensor);
 
-        m_deviceFirmwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware");
-        m_deviceFirmwareSensor->discovery_prefix = discovery_prefix;
+        m_deviceFirmwareSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware", discovery_prefix);
         m_discoveryComponents.push_back(m_deviceFirmwareSensor);
 
-        m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware Version");
-        m_deviceFirmwareVersionSensor->discovery_prefix = discovery_prefix;
+        m_deviceFirmwareVersionSensor = new MqttDiscoveryComponent("sensor", m_deviceName + " Firmware Version", discovery_prefix);
         m_discoveryComponents.push_back(m_deviceFirmwareVersionSensor);
 
         this->setLastWillMQTT(m_deviceStatusSensor->getStateTopic(), m_lastWillPayload);
