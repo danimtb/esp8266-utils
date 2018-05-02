@@ -70,7 +70,7 @@ public:
 
     void setup(String mqttServer, String mqttPort, String mqttUsername, String mqttPassword, bool mqttDiscoveryEnabled = false);
 
-    void setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion);
+    void setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion, String discovery_prefix="homeassistant");
     void setCallback(void (*callback)(String , String));
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
