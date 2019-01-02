@@ -55,7 +55,7 @@ String MqttDiscoveryComponent::getConfigPayload()
     JsonObject& jsonObject = jsonBuffer.createObject();
     String jsonString;
 
-    for(auto i : m_fields)
+    for(auto const &i : m_fields)
     {
         jsonObject[i.first] = i.second;
     }

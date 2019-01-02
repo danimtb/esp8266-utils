@@ -93,9 +93,9 @@ void MqttManager::publishDiscoveryInfo()
 {
     if (m_mqttDiscoveryEnabled)
     {
-        for (auto component : m_discoveryComponents)
+        for (auto const &component : m_discoveryComponents)
         {
-            m_mqttClient.publish(component->getConfigTopic().c_str(), 0, false, component->getConfigPayload().c_str());
+            this->publishMQTT(component->getConfigTopic(), component->getConfigPayload());
         }
     }
 }
@@ -276,9 +276,9 @@ void MqttManager::loop()
 
 void MqttManager::refreshStatusTopics()
 {
-    for (std::map<String, String>::iterator it = m_statusTopics.begin(); it != m_statusTopics.end(); it++)
+    for ( auto const &topic : m_statusTopics)
     {
-        m_mqttClient.publish(it->first.c_str(), 1, true, it->second.c_str());
+        this->publishMQTT(topic.first, topic.second);
     }
 }
 
