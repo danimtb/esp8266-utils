@@ -12,6 +12,7 @@ private:
     std::map<String, String> m_fields;
 
 public:
+    MqttDiscoveryComponent();
     MqttDiscoveryComponent(String component, String name, String discovery_prefix="homeassistant");
     void setConfigurtionVariable(String configKey, String configValue);
 
@@ -24,10 +25,10 @@ public:
     String m_configTopic;
 
 
-    String& getConfigTopic();
-    String& getStateTopic();
-    String& getCommandTopic();
-    String getConfigPayload();
+    String const getConfigTopic();
+    String const getStateTopic();
+    String const getCommandTopic();
+    String const getConfigPayload();
 };
 
 #endif

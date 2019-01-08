@@ -1,6 +1,10 @@
 #include "MqttDiscoveryComponent.h"
 
 
+MqttDiscoveryComponent::MqttDiscoveryComponent()
+{
+}
+
 MqttDiscoveryComponent::MqttDiscoveryComponent(String component, String name, String discovery_prefix)
 {
     this->component = component;
@@ -30,13 +34,13 @@ void MqttDiscoveryComponent::setConfigurtionVariable(String configKey, String co
     }
 }
 
-String& MqttDiscoveryComponent::getConfigTopic()
+String const MqttDiscoveryComponent::getConfigTopic()
 {
     m_configTopic = discovery_prefix + "/" + component + "/" + entity_id + "/" + discovery_suffix;
     return m_configTopic;
 }
 
-String& MqttDiscoveryComponent::getStateTopic()
+String const MqttDiscoveryComponent::getStateTopic()
 {
     if (m_fields.find("state_topic") != m_fields.end())
     {
@@ -44,12 +48,12 @@ String& MqttDiscoveryComponent::getStateTopic()
     }
 }
 
-String& MqttDiscoveryComponent::getCommandTopic()
+String const MqttDiscoveryComponent::getCommandTopic()
 {
     return m_fields["command_topic"];
 }
 
-String MqttDiscoveryComponent::getConfigPayload()
+String const MqttDiscoveryComponent::getConfigPayload()
 {
     StaticJsonBuffer<500> jsonBuffer;
     JsonObject& jsonObject = jsonBuffer.createObject();
