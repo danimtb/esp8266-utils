@@ -12,6 +12,7 @@
 #include "SimpleTimer.h"
 #include "MqttDiscoveryComponent.h"
 
+#include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
@@ -37,21 +38,21 @@ private:
     String m_lastWillPayload;
     String m_lastWillTopic;
 
-    MqttDiscoveryComponent* m_deviceStatusSensor;
-    MqttDiscoveryComponent* m_deviceIpSensor;
-    MqttDiscoveryComponent* m_deviceMacSensor;
-    MqttDiscoveryComponent* m_deviceHardwareSensor;
-    MqttDiscoveryComponent* m_deviceFirmwareSensor;
-    MqttDiscoveryComponent* m_deviceFirmwareVersionSensor;
+    MqttDiscoveryComponent m_deviceStatusSensor;
+    MqttDiscoveryComponent m_deviceIpSensor;
+    MqttDiscoveryComponent m_deviceMacSensor;
+    MqttDiscoveryComponent m_deviceHardwareSensor;
+    MqttDiscoveryComponent m_deviceFirmwareSensor;
+    MqttDiscoveryComponent m_deviceFirmwareVersionSensor;
 
     std::map<String, String> m_statusTopics;
     std::vector<String> m_subscribeTopics;
-    std::vector<MqttDiscoveryComponent*> m_discoveryComponents;
+    std::vector<MqttDiscoveryComponent> m_discoveryComponents;
 
     AsyncMqttClient m_mqttClient;
 
     bool m_connected;
-    bool m_mqttDiscoveryEnabled{false};
+    uint8_t m_discoveryCounter{0};
 
     SimpleTimer m_deviceStatusInfoTimer;
     SimpleTimer m_checkConnectivityTimer;
@@ -68,21 +69,17 @@ private:
 public:
     MqttManager();
 
-    void setup(String mqttServer, String mqttPort, String mqttUsername, String mqttPassword, bool mqttDiscoveryEnabled = false);
+    void setup(String mqttServer, String mqttPort, String mqttUsername, String mqttPassword);
 
     void setDeviceData(String deviceName, String hardware, String deviceIP, String firmware, String firmwareVersion, String discovery_prefix="homeassistant");
     void setCallback(void (*callback)(String , String));
 
     void setDeviceStatusInfoTime(unsigned long deviceStatusInfoTime);
 
-    void enableDiscovery(bool enable);
-    void addDiscoveryComponent(MqttDiscoveryComponent* component);
+    void addDiscoveryComponent(MqttDiscoveryComponent component);
 
     void addSubscribeTopic(String subscribeTopic);
     void clearSubscribeTopics();
-
-    void addStatusTopic(String statusTopic);
-    void clearStatusTopics();
 
     void startConnection();
     void stopConnection();
